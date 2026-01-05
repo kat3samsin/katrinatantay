@@ -1,0 +1,201 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Katrina's experience - clean summaries
+const experience = [
+  {
+    company: "Automattic",
+    team: "AI Team",
+    role: "Applied AI Engineer",
+    period: "2025 — Present",
+    logo: "automattic",
+    url: "https://automattic.com",
+  },
+  {
+    company: "Automattic",
+    team: "WordPress VIP",
+    role: "Software Engineer",
+    period: "2022 — 2025",
+    logo: "automattic",
+    url: "https://wpvip.com",
+  },
+  {
+    company: "Oracle",
+    role: "Tech Lead",
+    period: "2012 — 2022",
+    logo: "oracle",
+    url: "https://oracle.com",
+  },
+];
+
+// Skills
+const skills = ["TypeScript", "React", "Next.js", "GraphQL", "NestJS", "Node.js", "Jest", "Kubernetes", "A11Y", "WordPress"];
+
+// 2025 highlights
+const yearHighlights = [
+  { label: "Shipped WordPress's first AI Image Editor" },
+  { label: "Read 42 books (168% of goal)" },
+  { label: "297 miles run" },
+  { label: "44.4 hours strength training" },
+  { label: "12,000+ miles travelled" },
+  { label: "6 states visited" },
+];
+
+// Currently Reading - shelf style
+const currentlyReading = [
+  { title: "Dark Age", author: "Pierce Brown", isbn: "9780425285947", progress: 40, pages: 800, color: "#1a1a1a", gap: 35, tilt: 2 },
+  { title: "AI Engineering", author: "Chip Huyen", isbn: "9781098166304", progress: 25, pages: 450, color: "#4B0082", gap: 32, tilt: -3 },
+  { title: "Rogue Protocol", author: "Martha Wells", isbn: "9781250185433", progress: 60, pages: 160, color: "#1D8A8A", gap: 28, tilt: 4 },
+  { title: "Four Thousand Weeks", author: "Oliver Burkeman", isbn: "9780374715243", progress: 15, pages: 288, color: "#E07B39", gap: 30, tilt: -2 },
+];
+
+// Helper functions for shelf
+const getThickness = (pages: number) => Math.min(60, Math.max(30, Math.floor(pages / 15)));
+const getHeight = (pages: number) => Math.min(180, Math.max(140, 120 + Math.floor(pages / 8)));
+function muteColor(hex: string): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  let r = (num >> 16) & 255;
+  let g = (num >> 8) & 255;
+  let b = num & 255;
+  const gray = (r + g + b) / 3;
+  const saturation = 0.5;
+  r = Math.round(r * saturation + gray * (1 - saturation));
+  g = Math.round(g * saturation + gray * (1 - saturation));
+  b = Math.round(b * saturation + gray * (1 - saturation));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+const getSpineColor = (color: string) => muteColor(color);
+function isLightColor(hex: string): boolean {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5;
+}
+const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffffff';
+---
+
+<Layout>
+  <!-- Hero Section - Terminal Style -->
+  <section class="mb-[var(--spacing-section)]">
+    <p class="text-[var(--color-accent)] mb-2 text-sm">~ katrina</p>
+    <h1 class="mb-6">
+      <span class="text-[var(--color-accent)]">&gt;whoami</span> Katrina
+    </h1>
+    <p class="text-[var(--color-text-secondary)] max-w-lg leading-relaxed">
+      Claude whisperer, Applied AI Engineer at <a href="https://automattic.com" target="_blank" rel="noopener" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">Automattic AI</a>. Shaping the future of WordPress with AI.
+    </p>
+  </section>
+
+  <!-- CV / Experience Section -->
+  <section id="cv" class="mb-[var(--spacing-section)]">
+    <h2 class="section-header">/experience</h2>
+    <div class="space-y-4">
+      {experience.map((job) => (
+        <div class="dotted-item group">
+          <a href={job.url} target="_blank" rel="noopener" class="company-logo" title={job.company}>
+            {job.logo === "automattic" && (
+              <svg viewBox="0 0 64 64" fill="currentColor" class="w-5 h-5">
+                <path d="M53.62 31.294c0-10.583-7.66-20.057-21.67-20.057-13.9 0-21.57 9.474-21.57 20.057v1.3c0 10.583 7.66 20.157 21.57 20.157 14 0 21.67-9.575 21.67-20.157zM31.95 61.43C12.598 61.43 0 47.42 0 32.907v-1.814C0 16.277 12.598 2.57 31.95 2.57 51.402 2.57 64 16.277 64 31.093v1.814C64 47.42 51.402 61.43 31.95 61.43z"/>
+                <path d="M38.702 21.62c1.915 1.2 2.42 3.73 1.2 5.543L30.54 41.676c-1.2 1.814-3.628 2.42-5.543 1.2-1.814-1.2-2.318-3.73-1.1-5.543L33.26 22.83c1.2-1.814 3.628-2.42 5.443-1.2z"/>
+              </svg>
+            )}
+            {job.logo === "oracle" && (
+              <svg viewBox="0 0 64 64" fill="currentColor" class="w-5 h-5">
+                <path d="M20.2 52.2C8.93 52.2 0 43.056 0 32c0-11.27 9.143-20.2 20.2-20.2h23.6C55.07 11.8 64 20.944 64 32c0 11.27-9.143 20.2-20.2 20.2zm23.176-7.23c7.23 0 13.183-5.953 13.183-13.183s-5.953-13.183-13.183-13.183H20.837c-7.23 0-13.183 5.953-13.183 13.183S13.608 44.97 20.837 44.97z"/>
+              </svg>
+            )}
+          </a>
+          <div class="dotted-item__content">
+            <div class="flex items-baseline gap-2 flex-wrap">
+              <span class="font-medium">{job.role}</span>
+              <span class="text-[var(--color-text-secondary)]">{job.company}</span>
+              {job.team && <span class="text-[var(--color-text-secondary)]">| {job.team}</span>}
+            </div>
+            <span class="dotted-item__dots" aria-hidden="true"></span>
+            <span class="text-sm text-[var(--color-text-secondary)] whitespace-nowrap">{job.period}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="mb-[var(--spacing-section)]">
+    <h2 class="section-header">/skills</h2>
+    <div class="flex flex-wrap gap-2">
+      {skills.map((skill) => (
+        <span class="tag">{skill}</span>
+      ))}
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="mb-[var(--spacing-section)]">
+    <h2 class="section-header">/about</h2>
+    <p class="text-[var(--color-text-secondary)] leading-relaxed">
+      When I'm not chatting with Claude, you'll find me wrangling my mini human, loving on my cats Charlie & Zoey, lost in a good book, cooking up something delicious, roasting and brewing my own coffee, chasing miles on the road or reps in the gym—exploring the world with my family, one adventure at a time.
+    </p>
+  </section>
+
+  <!-- Currently Reading Section - Shelf Style -->
+  <section class="mb-[var(--spacing-section)]">
+    <div class="flex items-center justify-between mb-[var(--spacing-lg)]">
+      <h2 class="section-header mb-0">/reading</h2>
+      <a href="/shelf" class="text-xs font-normal normal-case tracking-normal text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">My Shelf →</a>
+    </div>
+    <div class="home-shelf">
+      {currentlyReading.map((book) => (
+        <a
+          href="/shelf"
+          class="home-book"
+          style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
+        >
+          <div class="home-book__3d">
+            <div class="home-book__spine" style={`background: ${getSpineColor(book.color)}; color: ${getTextColor(muteColor(book.color))};`}>
+              <span class="home-book__title">{book.title}</span>
+              <div class="home-book__progress">
+                <div class="home-book__progress-bar" style={`width: ${book.progress}%`}></div>
+              </div>
+            </div>
+            <img
+              class="home-book__cover"
+              src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+              alt={book.title}
+              loading="lazy"
+            />
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Writing / Blog Section -->
+  <section class="mb-[var(--spacing-section)]">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="section-header mb-0">/writing</h2>
+      <a href="/blog" class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+        View all →
+      </a>
+    </div>
+    <div class="py-8 text-center">
+      <p class="text-[var(--color-text-secondary)] text-sm">
+        Posts coming soon. Connect WordPress to see your writing here.
+      </p>
+    </div>
+  </section>
+
+  <!-- 2025 Highlights -->
+  <section>
+    <h2 class="section-header">/highlight-of-2025</h2>
+    <div class="grid grid-cols-2 gap-x-8 gap-y-2">
+      {yearHighlights.map((item) => (
+        <div class="flex items-center gap-2">
+          <span class="text-[var(--color-accent)]">—</span>
+          <span class="text-sm">{item.label}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>

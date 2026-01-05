@@ -1,0 +1,207 @@
+---
+import '../styles/global.css'
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Katrina Tantay — Applied AI Engineer",
+  description = "Applied AI Engineer at WordPress. Shaping the future of content with AI. Building secure, accessible, and inclusive web applications."
+} = Astro.props;
+
+const currentPath = Astro.url.pathname;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- JetBrains Mono as the monospace font -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <title>{title}</title>
+    <!-- Prevent flash of wrong theme -->
+    <script is:inline>
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme && savedTheme !== 'default') {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    </script>
+    <style>
+      .theme-picker {
+        position: relative;
+      }
+      .theme-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 0.5rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 0.5rem;
+        padding: 0.25rem;
+        min-width: 140px;
+        z-index: 50;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+      .theme-menu button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        color: var(--color-text-secondary);
+        border-radius: 0.25rem;
+        transition: all 0.15s;
+      }
+      .theme-menu button:hover {
+        background: var(--color-border);
+        color: var(--color-text-primary);
+      }
+      .theme-menu button.active {
+        color: var(--color-accent);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <div class="max-w-2xl mx-auto px-6 py-12 md:py-16 lg:py-20">
+      <header class="mb-[var(--spacing-section)]">
+        <nav class="flex items-center justify-between">
+          <a
+            href="/"
+            class="font-semibold tracking-tight hover:text-[var(--color-accent)] transition-colors"
+          >
+            Katrina Tantay
+          </a>
+          <div class="flex items-center gap-6 text-sm">
+            <a
+              href="/#cv"
+              class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              CV
+            </a>
+            <a
+              href="/#about"
+              class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              About
+            </a>
+            <a
+              href="/shelf"
+              class:list={[
+                "transition-colors",
+                currentPath.startsWith("/shelf") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+              ]}
+            >
+              Shelf
+            </a>
+            <a
+              href="/blog"
+              class:list={[
+                "transition-colors",
+                currentPath.startsWith("/blog") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+              ]}
+            >
+              Blog
+            </a>
+            <div class="theme-picker">
+              <button
+                id="theme-toggle"
+                class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-1"
+                aria-label="Change theme"
+              >
+                <span>🎨</span>
+              </button>
+              <div id="theme-menu" class="theme-menu hidden">
+                <button data-theme="default">Cloud Dancer</button>
+                <button data-theme="claude-code">Claude Code</button>
+                <button data-theme="one-dark">One Dark Pro</button>
+                <button data-theme="dracula">Dracula</button>
+                <button data-theme="github-dark">GitHub Dark</button>
+                <button data-theme="monokai">Monokai</button>
+                <button data-theme="nord">Nord</button>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <slot />
+      </main>
+
+      <footer class="mt-[var(--spacing-section)] pt-8 border-t border-[var(--color-border)]">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-[var(--color-text-secondary)]">
+          <span>&copy; {new Date().getFullYear()} Katrina Tantay</span>
+          <div class="flex items-center gap-4">
+            <a href="https://github.com/kat3samsin" target="_blank" rel="noopener" class="hover:text-[var(--color-text-primary)] transition-colors">
+              GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/katrinatantay/" target="_blank" rel="noopener" class="hover:text-[var(--color-text-primary)] transition-colors">
+              LinkedIn
+            </a>
+            <a href="mailto:hi@katrinatantay.com" class="hover:text-[var(--color-text-primary)] transition-colors">
+              Email
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      const toggle = document.getElementById('theme-toggle');
+      const menu = document.getElementById('theme-menu');
+      const buttons = menu?.querySelectorAll('button');
+
+      function getCurrentTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'default';
+      }
+
+      function setTheme(theme: string) {
+        if (theme === 'default') {
+          document.documentElement.removeAttribute('data-theme');
+        } else {
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+        localStorage.setItem('theme', theme);
+        updateActiveButton();
+      }
+
+      function updateActiveButton() {
+        const current = getCurrentTheme();
+        buttons?.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-theme') === current);
+        });
+      }
+
+      // Toggle menu visibility
+      toggle?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu?.classList.toggle('hidden');
+      });
+
+      // Handle theme selection
+      buttons?.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const theme = btn.getAttribute('data-theme');
+          if (theme) setTheme(theme);
+          menu?.classList.add('hidden');
+        });
+      });
+
+      // Close menu on outside click
+      document.addEventListener('click', () => {
+        menu?.classList.add('hidden');
+      });
+
+      // Initial state
+      updateActiveButton();
+    </script>
+  </body>
+</html>
