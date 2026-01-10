@@ -93,22 +93,22 @@ const currentPath = Astro.url.pathname;
               About
             </a>
             <a
-              href="/shelf"
+              href="/library"
               class:list={[
                 "transition-colors",
-                currentPath.startsWith("/shelf") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                currentPath.startsWith("/library") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
               ]}
             >
-              Shelf
+              Library
             </a>
             <a
-              href="/blog"
+              href="/musings"
               class:list={[
                 "transition-colors",
-                currentPath.startsWith("/blog") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                currentPath.startsWith("/musings") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
               ]}
             >
-              Blog
+              Musings
             </a>
             <div class="theme-picker">
               <button

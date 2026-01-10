@@ -5,8 +5,8 @@
  * The WordPress REST API is available at: {your-site}/wp-json/wp/v2/posts
  */
 
-// TODO: Replace with your WordPress site URL
-const WORDPRESS_URL = import.meta.env.WORDPRESS_URL || 'https://your-wordpress-site.com';
+// WordPress.com API endpoint
+const WORDPRESS_URL = import.meta.env.WORDPRESS_URL || 'https://public-api.wordpress.com/wp/v2/sites/kat3samsinblog.wordpress.com';
 
 export interface WordPressPost {
   id: number;
@@ -40,13 +40,37 @@ export interface BlogPost {
   featuredImage?: string;
 }
 
+export interface WordPressComment {
+  id: number;
+  post: number;
+  author_name: string;
+  author_url: string;
+  date: string;
+  content: {
+    rendered: string;
+  };
+  author_avatar_urls?: {
+    [key: string]: string;
+  };
+}
+
+export interface Comment {
+  id: number;
+  authorName: string;
+  authorUrl: string;
+  date: string;
+  formattedDate: string;
+  content: string;
+  avatarUrl?: string;
+}
+
 /**
  * Fetch posts from WordPress REST API
  */
 export async function getPosts(count: number = 10): Promise<BlogPost[]> {
   try {
     const response = await fetch(
-      `${WORDPRESS_URL}/wp-json/wp/v2/posts?per_page=${count}&_embed`
+      `${WORDPRESS_URL}/posts?per_page=${count}&_embed`
     );
 
     if (!response.ok) {
@@ -78,7 +102,7 @@ export async function getPosts(count: number = 10): Promise<BlogPost[]> {
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
     const response = await fetch(
-      `${WORDPRESS_URL}/wp-json/wp/v2/posts?slug=${slug}&_embed`
+      `${WORDPRESS_URL}/posts?slug=${slug}&_embed`
     );
 
     if (!response.ok) {
@@ -108,9 +132,65 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   }
 }
 
+/**
+ * Fetch comments for a post
+ */
+export async function getComments(postId: number): Promise<Comment[]> {
+  try {
+    const response = await fetch(
+      `${WORDPRESS_URL}/comments?post=${postId}&per_page=100`
+    );
+
+    if (!response.ok) {
+      console.error('Failed to fetch comments:', response.statusText);
+      return [];
+    }
+
+    const comments: WordPressComment[] = await response.json();
+
+    return comments.map(comment => ({
+      id: comment.id,
+      authorName: decodeHtmlEntities(comment.author_name),
+      authorUrl: comment.author_url,
+      date: comment.date,
+      formattedDate: formatDate(comment.date),
+      content: comment.content.rendered,
+      avatarUrl: comment.author_avatar_urls?.['48'] || comment.author_avatar_urls?.['24'],
+    }));
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+    return [];
+  }
+}
+
+/**
+ * Get WordPress.com URL for the post (for commenting)
+ */
+export function getWordPressPostUrl(slug: string): string {
+  return `https://kat3samsinblog.wordpress.com/${slug}/`;
+}
+
 // Helper functions
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8216;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
+    .replace(/&#8211;/g, '–')
+    .replace(/&#8212;/g, '—')
+    .replace(/&hellip;/g, '…')
+    .replace(/\[…\]/g, '…');
+}
+
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '').trim();
+  return decodeHtmlEntities(html.replace(/<[^>]*>/g, '')).trim();
 }
 
 function formatDate(dateString: string): string {
