@@ -1,0 +1,253 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getPosts, getComments, getWordPressPostUrl } from '../../lib/wordpress';
+
+// Generate static paths for all posts at build time
+export async function getStaticPaths() {
+  const posts = await getPosts(100);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const comments = await getComments(post.id);
+const wpPostUrl = getWordPressPostUrl(post.slug);
+---
+
+<Layout title={`${post.title} - Katrina Tantay`}>
+  <article>
+    <header class="mb-8">
+      <a href="/musings" class="text-sm link-accent mb-4 inline-block">← Back to musings</a>
+      <time class="block text-sm text-[var(--color-text-secondary)] mb-2">
+        {post.formattedDate}
+      </time>
+      <h1 class="text-3xl font-semibold leading-tight">
+        {post.title}
+      </h1>
+    </header>
+
+    <div class="prose-content" set:html={post.content} />
+  </article>
+
+  <!-- Comments Section -->
+  <section class="mt-16 pt-8 border-t border-[var(--color-border)]">
+    <h2 class="section-header" aria-label="Comments">/comments</h2>
+
+    {comments.length > 0 ? (
+      <div class="comments-list">
+        {comments.map((comment) => (
+          <div class="comment">
+            <div class="comment__header">
+              {comment.avatarUrl && (
+                <img
+                  src={comment.avatarUrl}
+                  alt={comment.authorName}
+                  class="comment__avatar"
+                />
+              )}
+              <div class="comment__meta">
+                {comment.authorUrl ? (
+                  <a href={comment.authorUrl} target="_blank" rel="noopener" class="comment__author">
+                    {comment.authorName}
+                  </a>
+                ) : (
+                  <span class="comment__author">{comment.authorName}</span>
+                )}
+                <time class="comment__date">{comment.formattedDate}</time>
+              </div>
+            </div>
+            <div class="comment__content" set:html={comment.content} />
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p class="text-[var(--color-text-secondary)] text-sm">
+        No comments yet. Be the first to share your thoughts!
+      </p>
+    )}
+
+    <!-- Add Comment CTA -->
+    <div class="add-comment">
+      <p class="text-[var(--color-text-secondary)] text-sm mb-4">
+        Want to join the conversation?
+      </p>
+      <a
+        href={`${wpPostUrl}#respond`}
+        target="_blank"
+        rel="noopener"
+        class="add-comment__button"
+      >
+        Leave a comment →
+      </a>
+    </div>
+  </section>
+
+  <div class="mt-12 pt-8 border-t border-[var(--color-border)]">
+    <a href="/musings" class="text-sm link-accent">← Back to musings</a>
+  </div>
+</Layout>
+
+<style>
+  .prose-content {
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+
+  .prose-content :global(p) {
+    margin-bottom: 1.5em;
+  }
+
+  .prose-content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+
+  .prose-content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose-content :global(a) {
+    color: var(--color-accent);
+  }
+
+  .prose-content :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .prose-content :global(ul),
+  .prose-content :global(ol) {
+    margin: 1em 0;
+    padding-left: 1.5em;
+  }
+
+  .prose-content :global(li) {
+    margin-bottom: 0.5em;
+  }
+
+  .prose-content :global(blockquote) {
+    border-left: 3px solid var(--color-border);
+    padding-left: 1em;
+    margin: 1.5em 0;
+    font-style: italic;
+  }
+
+  .prose-content :global(pre) {
+    background: var(--color-surface);
+    padding: 1em;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5em 0;
+  }
+
+  .prose-content :global(code) {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.9em;
+  }
+
+  .prose-content :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5em 0;
+  }
+
+  /* Comments styles */
+  .comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .comment {
+    padding: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+  }
+
+  .comment__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .comment__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .comment__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .comment__author {
+    font-weight: 500;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+  }
+
+  a.comment__author:hover {
+    color: var(--color-accent);
+  }
+
+  .comment__date {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+  }
+
+  .comment__content {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .comment__content :global(p) {
+    margin: 0;
+  }
+
+  .comment__content :global(p + p) {
+    margin-top: 0.75em;
+  }
+
+  /* Add comment section */
+  .add-comment {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    text-align: center;
+  }
+
+  .add-comment__button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.2s ease;
+  }
+
+  .add-comment__button:hover {
+    background: var(--color-accent-hover);
+    color: var(--color-bg);
+  }
+</style>

@@ -1,0 +1,775 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Currently Reading - with page counts and cover-matched colors
+const currentlyReading = [
+  { title: "Dark Age", author: "Pierce Brown", isbn: "9780425285947", progress: 40, pages: 800, color: "#1a1a1a", gap: 35, tilt: 2 },
+  { title: "AI Engineering", author: "Chip Huyen", isbn: "9781098166304", progress: 25, pages: 450, color: "#4B0082", gap: 32, tilt: -3 },
+  { title: "Rogue Protocol", author: "Martha Wells", isbn: "9781250185433", progress: 60, pages: 160, color: "#1D8A8A", gap: 28, tilt: 4 },
+  { title: "Four Thousand Weeks", author: "Oliver Burkeman", isbn: "9780374715243", progress: 15, pages: 288, color: "#E07B39", gap: 30, tilt: -2 },
+];
+
+// 2025 Five-Star Reads - All on one shelf
+const fiveStarReads = [
+  { title: "Remarkably Bright Creatures", author: "Shelby Van Pelt", isbn: "9780063204157", rating: 5, favorite: true, pages: 368, color: "#D97757", gap: 32, tilt: 3 },
+  { title: "Project Hail Mary", author: "Andy Weir", isbn: "9780593135204", rating: 5, pages: 496, color: "#1C1C1C", gap: 30, tilt: -2 },
+  { title: "The Passage", author: "Justin Cronin", isbn: "9780345504968", rating: 5, pages: 879, color: "#0F1626", gap: 38, tilt: 4 },
+  { title: "Mistborn", author: "Brandon Sanderson", isbn: "9780765311788", rating: 5, pages: 672, color: "#4A4A4A", gap: 35, tilt: -3 },
+  { title: "Dark Matter", author: "Blake Crouch", isbn: "9781101904220", rating: 5, pages: 342, color: "#0D1B2A", gap: 28, tilt: 2 },
+  { title: "1984", author: "George Orwell", isbn: "9780451524935", rating: 5, pages: 328, color: "#C41E3A", gap: 26, tilt: -4 },
+  { title: "Morning Star", author: "Pierce Brown", isbn: "9780345539847", rating: 5, pages: 518, color: "#CFB53B", gap: 32, tilt: 3 },
+  { title: "Golden Son", author: "Pierce Brown", isbn: "9780345539816", rating: 5, pages: 464, color: "#B8860B", gap: 30, tilt: -2 },
+  { title: "Mockingjay", author: "Suzanne Collins", isbn: "9780439023511", rating: 5, pages: 390, color: "#1A1A1A", gap: 28, tilt: 4 },
+  { title: "Catching Fire", author: "Suzanne Collins", isbn: "9780439023498", rating: 5, pages: 400, color: "#E85D04", gap: 28, tilt: -3 },
+  { title: "Hunger Games", author: "Suzanne Collins", isbn: "9780439023481", rating: 5, pages: 374, color: "#2D2D2D", gap: 30, tilt: 2 },
+  { title: "Crying in H Mart", author: "Michelle Zauner", isbn: "9780525657743", rating: 5, pages: 256, color: "#E8B4BC", gap: 24, tilt: -2 },
+];
+
+// Want to Read
+const wantToRead = [
+  { title: "Anxious People", author: "Fredrik Backman", isbn: "9781501160837", pages: 400, color: "#4ECDC4", gap: 30, tilt: 3 },
+  { title: "House in Cerulean Sea", author: "T.J. Klune", isbn: "9781250217318", pages: 398, color: "#5D93C4", gap: 28, tilt: -2 },
+  { title: "Educated", author: "Tara Westover", isbn: "9780399590504", pages: 352, color: "#2C3E50", gap: 28, tilt: 4 },
+  { title: "Piranesi", author: "Susanna Clarke", isbn: "9781635575637", pages: 272, color: "#7B8D8E", gap: 24, tilt: -3 },
+  { title: "Secret History", author: "Donna Tartt", isbn: "9781400031702", pages: 559, color: "#1A1A1A", gap: 34, tilt: 2 },
+  { title: "Lessons in Chemistry", author: "Bonnie Garmus", isbn: "9780385547345", pages: 400, color: "#F5DEB3", gap: 28, tilt: -2 },
+];
+
+// Helper to calculate thickness based on pages (30-60px range) - slimmer books
+const getThickness = (pages: number) => Math.min(60, Math.max(30, Math.floor(pages / 15)));
+// Helper to calculate height variation (140-180px range) - shorter books
+const getHeight = (pages: number) => Math.min(180, Math.max(140, 120 + Math.floor(pages / 8)));
+// Helper to mute/desaturate a color
+function muteColor(hex: string): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  let r = (num >> 16) & 255;
+  let g = (num >> 8) & 255;
+  let b = num & 255;
+  // Desaturate by mixing with gray
+  const gray = (r + g + b) / 3;
+  const saturation = 0.5; // 50% saturation
+  r = Math.round(r * saturation + gray * (1 - saturation));
+  g = Math.round(g * saturation + gray * (1 - saturation));
+  b = Math.round(b * saturation + gray * (1 - saturation));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+// Helper to get flat muted color for spine
+const getSpineColor = (color: string) => muteColor(color);
+// Check if color is light (needs dark text)
+function isLightColor(hex: string): boolean {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5;
+}
+const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffffff';
+
+const stats = {
+  year: 2026,
+  booksThisYear: 0,
+  lastYear: 42,
+  fiveStars: 17,
+  lifetime: 135,
+};
+---
+
+<Layout title="My Library - Katrina Tantay">
+  <section>
+    <div class="mb-8">
+      <h1 class="text-2xl font-semibold mb-2" aria-label="My Library">/library</h1>
+      <p class="text-[var(--color-text-secondary)] text-sm">
+        {stats.lastYear} books in 2025 · {stats.fiveStars} five-star reads · {stats.lifetime}+ lifetime
+      </p>
+    </div>
+
+    <!-- Loading State -->
+    <div id="shelf-loading" class="shelf-loading">
+      <div class="shelf-loading__spinner"></div>
+      <p id="loading-text" class="shelf-loading__text">Reading a good book...</p>
+    </div>
+    <script is:inline>
+      const loadingMessages = [
+        "Reading a good book...",
+        "Organizing the shelves...",
+        "Dusting off the covers...",
+        "Finding the right page...",
+        "Lost in a story...",
+        "Brewing some coffee first...",
+        "One more chapter...",
+        "Adjusting the bookmarks...",
+        "Alphabetizing by author...",
+        "Just five more pages...",
+      ];
+      const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+      document.getElementById('loading-text').textContent = randomMessage;
+    </script>
+
+    <!-- Bookshelf - 3 Shelves -->
+    <div id="bookshelf-wrapper" class="bookshelf-wrapper bookshelf-wrapper--loading">
+        <!-- Shelf 1: Currently Reading -->
+        <div class="bookshelf-container">
+          <p class="shelf-label">Currently Reading</p>
+          <div class="shelf">
+            <div class="shelf__books shelf__books--left">
+              {currentlyReading.map((book) => (
+                <div
+                  class="book book--reading"
+                  data-title={book.title}
+                  data-author={book.author}
+                  data-isbn={book.isbn}
+                  data-progress={book.progress}
+                  data-status={`📖 Reading · ${book.progress}%`}
+                  style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
+                >
+                  <div class="book__3d">
+                    <div class="book__spine" style={`background: ${getSpineColor(book.color)}; color: ${getTextColor(muteColor(book.color))};`}>
+                      <span class="book__title">{book.title}</span>
+                      <div class="book__progress">
+                        <div class="book__progress-bar" style={`width: ${book.progress}%`}></div>
+                      </div>
+                    </div>
+                    <img
+                      class="book__cover-peek"
+                      src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                      alt={book.title}
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Shelf 2: Five Star Reads in 2025 -->
+        <div class="bookshelf-container">
+          <p class="shelf-label">Five Star Reads in 2025</p>
+          <div class="shelf">
+            <div class="shelf__books shelf__books--center">
+              {fiveStarReads.map((book) => (
+                <div
+                  class={`book ${book.favorite ? 'book--favorite' : ''}`}
+                  data-title={book.title}
+                  data-author={book.author}
+                  data-isbn={book.isbn}
+                  data-status={book.favorite ? '🏆 2025 Favorite' : '★★★★★'}
+                  style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
+                >
+                  <div class="book__3d">
+                    <div class="book__spine" style={`background: ${getSpineColor(book.color)}; color: ${getTextColor(muteColor(book.color))};`}>
+                      <span class="book__title">{book.title}</span>
+                    </div>
+                    <img
+                      class="book__cover-peek"
+                      src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                      alt={book.title}
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Shelf 3: Want to Read -->
+        <div class="bookshelf-container">
+          <p class="shelf-label">Want to Read</p>
+          <div class="shelf">
+            <div class="shelf__books shelf__books--right">
+              {wantToRead.map((book) => (
+                <div
+                  class="book"
+                  data-title={book.title}
+                  data-author={book.author}
+                  data-isbn={book.isbn}
+                  data-status="📚 TBR"
+                  style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
+                >
+                  <div class="book__3d">
+                    <div class="book__spine" style={`background: ${getSpineColor(book.color)}; color: ${getTextColor(muteColor(book.color))};`}>
+                      <span class="book__title">{book.title}</span>
+                    </div>
+                    <img
+                      class="book__cover-peek"
+                      src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                      alt={book.title}
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <!-- Book Modal -->
+    <div class="book-modal hidden" id="book-modal">
+      <div class="book-modal__backdrop" id="modal-backdrop"></div>
+      <div class="book-modal__content">
+        <button class="book-modal__close" id="modal-close" aria-label="Close">×</button>
+        <div class="book-modal__book">
+          <div class="book-modal__cover">
+            <img src="" alt="" id="panel-img" />
+          </div>
+        </div>
+        <div class="book-modal__info">
+          <h2 id="panel-title"></h2>
+          <p id="panel-author"></p>
+          <div id="panel-progress-container" class="hidden">
+            <p class="progress-label">Progress: <span id="panel-progress-text"></span></p>
+            <div class="book-modal__progress-bar">
+              <div class="book-modal__progress-fill" id="panel-progress-fill"></div>
+            </div>
+          </div>
+          <p id="panel-status"></p>
+          <p class="isbn-label">ISBN: <span id="panel-isbn"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat">
+        <span class="stat__number">{stats.lastYear}</span>
+        <span class="stat__label">in 2025</span>
+      </div>
+      <div class="stat">
+        <span class="stat__number">{stats.fiveStars}</span>
+        <span class="stat__label">5-star</span>
+      </div>
+      <div class="stat">
+        <span class="stat__number">{stats.lifetime}+</span>
+        <span class="stat__label">lifetime</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="mt-12">
+    <a href="/" class="text-sm link-accent">← Back home</a>
+  </div>
+</Layout>
+
+<style>
+  /* Book Modal */
+  .book-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .book-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+  }
+
+  .book-modal__content {
+    position: relative;
+    display: flex;
+    gap: 3rem;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+  }
+
+  .book-modal__close {
+    position: absolute;
+    top: -2rem;
+    right: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    color: rgba(255,255,255,0.7);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+
+  .book-modal__close:hover {
+    color: white;
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* 3D Book Effect */
+  .book-modal__book {
+    perspective: 1000px;
+    flex-shrink: 0;
+  }
+
+  .book-modal__cover {
+    width: 240px;
+    position: relative;
+    transform-style: preserve-3d;
+    transform: rotateY(-15deg);
+    box-shadow:
+      20px 10px 50px rgba(0,0,0,0.5),
+      0 0 100px rgba(0,0,0,0.3);
+    border-radius: 0 4px 4px 0;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .book-modal__cover:hover {
+    transform: rotateY(-5deg);
+  }
+
+  .book-modal__cover::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(90deg,
+      rgba(0,0,0,0.3) 0%,
+      rgba(0,0,0,0.1) 50%,
+      rgba(255,255,255,0.1) 100%
+    );
+    z-index: 1;
+  }
+
+  .book-modal__cover img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .book-modal__info {
+    flex: 1;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .book-modal__info h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .book-modal__info #panel-author {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .book-modal__info #panel-status {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: var(--color-accent);
+  }
+
+  .book-modal__info .progress-label {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .book-modal__info .isbn-label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 1.5rem;
+  }
+
+  .book-modal__info #panel-progress-container {
+    margin-bottom: 1.5rem;
+  }
+
+  .book-modal__progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .book-modal__progress-fill {
+    height: 100%;
+    background: var(--color-accent);
+    transition: width 0.3s ease;
+  }
+
+  @media (max-width: 640px) {
+    .book-modal__content {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .book-modal__cover {
+      width: 180px;
+      transform: rotateY(0);
+    }
+
+    .book-modal__cover:hover {
+      transform: rotateY(0);
+    }
+
+    .book-modal__info h2 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Shelf Label */
+  .shelf-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  /* Bookshelf Container */
+  .bookshelf-container {
+    margin-bottom: 2rem;
+  }
+
+  /* Individual Shelf */
+  .shelf {
+    margin-bottom: 1.5rem;
+  }
+
+  .shelf:last-child {
+    margin-bottom: 0;
+  }
+
+  .shelf__books {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    overflow: visible;
+  }
+
+  .shelf__books--left {
+    justify-content: flex-start;
+  }
+
+  .shelf__books--right {
+    justify-content: flex-end;
+  }
+
+  .shelf__books--center {
+    justify-content: center;
+  }
+
+  /* Book Container - holds the 3D book */
+  .book {
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    perspective: 800px;
+    z-index: 1;
+    transition: z-index 0s;
+  }
+
+  .book:hover {
+    z-index: 100;
+  }
+
+  /* The 3D book wrapper - always slightly rotated to show cover */
+  .book__3d {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+    /* Slight rotation to show cover peek + tilt for lean effect */
+    transform: rotateY(-25deg) rotateZ(var(--tilt, 0deg));
+    transform-origin: center bottom;
+  }
+
+  .book:hover .book__3d {
+    transform: rotateY(-55deg) rotateZ(0deg);
+  }
+
+  /* The spine face of the book */
+  .book__spine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    text-align: center;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.65rem;
+    font-weight: 500;
+    line-height: 1.2;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+
+
+  .book__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 90%;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Book cover - front face of the book, perpendicular to spine */
+  .book__cover-peek {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    height: 100%;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+    border-radius: 0 2px 2px 0;
+    /* Position cover perpendicular to spine */
+    transform-origin: left center;
+    transform: rotateY(90deg);
+    backface-visibility: hidden;
+    /* Slightly muted cover */
+    filter: brightness(0.95) saturate(0.9);
+  }
+
+  .book--selected .book__spine {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .book__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0,0,0,0.4);
+  }
+
+  .book__progress-bar {
+    height: 100%;
+    background: #fff;
+    opacity: 0.9;
+  }
+
+  /* Stats Row */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat__number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .stat__label {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .shelf__books {
+      overflow-x: auto;
+      justify-content: flex-start;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  /* Loading State */
+  .shelf-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+  }
+
+  .shelf-loading__spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .shelf-loading__text {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+
+  .shelf-loading--hidden {
+    display: none;
+  }
+
+  /* Bookshelf wrapper - hidden while loading */
+  .bookshelf-wrapper--loading {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .bookshelf-wrapper--ready {
+    opacity: 1;
+    position: relative;
+    pointer-events: auto;
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+
+<script>
+  // Loading state - wait for book covers to load
+  const shelfLoading = document.getElementById('shelf-loading');
+  const bookshelfWrapper = document.getElementById('bookshelf-wrapper');
+  const coverImages = document.querySelectorAll('.book__cover-peek') as NodeListOf<HTMLImageElement>;
+
+  function showShelf() {
+    shelfLoading?.classList.add('shelf-loading--hidden');
+    bookshelfWrapper?.classList.remove('bookshelf-wrapper--loading');
+    bookshelfWrapper?.classList.add('bookshelf-wrapper--ready');
+  }
+
+  // Wait for all cover images to load
+  let loadedCount = 0;
+  const totalImages = coverImages.length;
+
+  function checkAllLoaded() {
+    loadedCount++;
+    if (loadedCount >= totalImages) {
+      showShelf();
+    }
+  }
+
+  coverImages.forEach(img => {
+    if (img.complete) {
+      checkAllLoaded();
+    } else {
+      img.addEventListener('load', checkAllLoaded);
+      img.addEventListener('error', checkAllLoaded); // Count errors too so we don't hang
+    }
+  });
+
+  // Fallback: show shelf after 5 seconds even if images aren't loaded
+  setTimeout(() => {
+    if (!bookshelfWrapper?.classList.contains('bookshelf-wrapper--ready')) {
+      showShelf();
+    }
+  }, 5000);
+
+  const books = document.querySelectorAll('.book');
+  const modal = document.getElementById('book-modal');
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalClose = document.getElementById('modal-close');
+  const panelTitle = document.getElementById('panel-title');
+  const panelAuthor = document.getElementById('panel-author');
+  const panelStatus = document.getElementById('panel-status');
+  const panelIsbn = document.getElementById('panel-isbn');
+  const panelImg = document.getElementById('panel-img') as HTMLImageElement;
+  const panelProgressContainer = document.getElementById('panel-progress-container');
+  const panelProgressText = document.getElementById('panel-progress-text');
+  const panelProgressFill = document.getElementById('panel-progress-fill');
+
+  let selectedBook: Element | null = null;
+
+  function openModal(book: Element) {
+    // Remove selection from previous book
+    if (selectedBook) {
+      selectedBook.classList.remove('book--selected');
+    }
+
+    // Select new book
+    book.classList.add('book--selected');
+    selectedBook = book;
+
+    const title = book.getAttribute('data-title') || '';
+    const author = book.getAttribute('data-author') || '';
+    const isbn = book.getAttribute('data-isbn') || '';
+    const status = book.getAttribute('data-status') || '';
+    const progress = book.getAttribute('data-progress');
+
+    // Update modal info
+    if (panelTitle) panelTitle.textContent = title;
+    if (panelAuthor) panelAuthor.textContent = `by ${author}`;
+    if (panelStatus) panelStatus.textContent = status;
+    if (panelIsbn) panelIsbn.textContent = isbn;
+    if (panelImg) {
+      panelImg.src = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`;
+      panelImg.alt = title;
+    }
+
+    // Show/hide progress bar
+    if (progress && panelProgressContainer && panelProgressText && panelProgressFill) {
+      panelProgressContainer.classList.remove('hidden');
+      panelProgressText.textContent = `${progress}%`;
+      panelProgressFill.style.width = `${progress}%`;
+    } else if (panelProgressContainer) {
+      panelProgressContainer.classList.add('hidden');
+    }
+
+    // Show modal
+    if (modal) modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    if (selectedBook) {
+      selectedBook.classList.remove('book--selected');
+      selectedBook = null;
+    }
+  }
+
+  // Open modal on book click
+  books.forEach(book => {
+    book.addEventListener('click', () => openModal(book));
+  });
+
+  // Close modal handlers
+  modalBackdrop?.addEventListener('click', closeModal);
+  modalClose?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>

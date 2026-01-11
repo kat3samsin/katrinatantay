@@ -1,0 +1,122 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<Layout title={`${post.data.title} - Katrina Tantay`}>
+  <article>
+    <header class="mb-8">
+      <a href="/musings" class="text-sm link-accent mb-4 inline-block">← Back to musings</a>
+      <time class="block text-sm text-[var(--color-text-secondary)] mb-2">
+        {formatDate(post.data.date)}
+      </time>
+      <h1 class="text-3xl font-semibold leading-tight">
+        {post.data.title}
+      </h1>
+      {post.data.tags && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {post.data.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="prose-content">
+      <Content />
+    </div>
+  </article>
+
+  <div class="mt-16 pt-8 border-t border-[var(--color-border)]">
+    <a href="/musings" class="text-sm link-accent">← Back to musings</a>
+  </div>
+</Layout>
+
+<style>
+  .prose-content {
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+
+  .prose-content :global(p) {
+    margin-bottom: 1.5em;
+  }
+
+  .prose-content :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+
+  .prose-content :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+
+  .prose-content :global(a) {
+    color: var(--color-accent);
+  }
+
+  .prose-content :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .prose-content :global(ul),
+  .prose-content :global(ol) {
+    margin: 1em 0;
+    padding-left: 1.5em;
+  }
+
+  .prose-content :global(li) {
+    margin-bottom: 0.5em;
+  }
+
+  .prose-content :global(blockquote) {
+    border-left: 3px solid var(--color-border);
+    padding-left: 1em;
+    margin: 1.5em 0;
+    font-style: italic;
+  }
+
+  .prose-content :global(pre) {
+    background: #f5f5f5;
+    padding: 1em;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5em 0;
+  }
+
+  .prose-content :global(code) {
+    font-family: 'SF Mono', Monaco, monospace;
+    font-size: 0.9em;
+  }
+
+  .prose-content :global(img) {
+    border-radius: 0.5rem;
+    margin: 1.5em 0;
+  }
+</style>

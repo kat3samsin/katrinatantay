@@ -5,9 +5,9 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://katrinatantay.com',
+  trailingSlash: 'always',
   vite: {
     plugins: [tailwindcss()]
   },
-  // Static output - blog pages with prerender=false will be server-rendered
   output: 'static',
 });
