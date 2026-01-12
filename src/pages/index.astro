@@ -18,7 +18,7 @@ const experience = [
   {
     company: "Automattic",
     team: "WordPress VIP",
-    role: "Software Engineer",
+    role: "Senior Software Engineer",
     period: "2022 — 2025",
     logo: "automattic",
     url: "https://wpvip.com",
@@ -177,6 +177,7 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
       <h2 class="section-header mb-0" aria-label="Currently Reading">/library</h2>
       <a href="/library" class="text-xs font-normal normal-case tracking-normal text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">My Library →</a>
     </div>
+    <p class="text-[var(--color-text-secondary)] text-xs uppercase tracking-wider mb-3">Currently Reading</p>
     <div class="home-shelf">
       {currentlyReading.map((book) => (
         <a
