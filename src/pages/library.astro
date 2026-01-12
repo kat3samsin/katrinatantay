@@ -3,10 +3,16 @@ import Layout from '../layouts/Layout.astro';
 
 // Currently Reading - with page counts and cover-matched colors
 const currentlyReading = [
-  { title: "Dark Age", author: "Pierce Brown", isbn: "9780425285947", progress: 40, pages: 800, color: "#1a1a1a", gap: 35, tilt: 2 },
+  { title: "Light Bringer", author: "Pierce Brown", isbn: "9780425285978", progress: 5, pages: 704, color: "#8B0000", gap: 35, tilt: 2 },
+  { title: "The Correspondent", author: "Virginia Evans", isbn: "9780593798430", progress: 10, pages: 288, color: "#E8D5B7", gap: 26, tilt: -2 },
   { title: "AI Engineering", author: "Chip Huyen", isbn: "9781098166304", progress: 25, pages: 450, color: "#4B0082", gap: 32, tilt: -3 },
   { title: "Rogue Protocol", author: "Martha Wells", isbn: "9781250185433", progress: 60, pages: 160, color: "#1D8A8A", gap: 28, tilt: 4 },
   { title: "Four Thousand Weeks", author: "Oliver Burkeman", isbn: "9780374715243", progress: 15, pages: 288, color: "#E07B39", gap: 30, tilt: -2 },
+];
+
+// Read in 2026
+const readIn2026 = [
+  { title: "Dark Age", author: "Pierce Brown", isbn: "9780425285961", rating: 4, pages: 800, color: "#1a1a1a", gap: 35, tilt: 2 },
 ];
 
 // 2025 Five-Star Reads - All on one shelf
@@ -68,10 +74,10 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
 
 const stats = {
   year: 2026,
-  booksThisYear: 0,
+  booksThisYear: 1,
   lastYear: 42,
   fiveStars: 17,
-  lifetime: 135,
+  lifetime: 136,
 };
 ---
 
@@ -143,7 +149,38 @@ const stats = {
           </div>
         </div>
 
-        <!-- Shelf 2: Five Star Reads in 2025 -->
+        <!-- Shelf 2: Read in 2026 -->
+        <div class="bookshelf-container">
+          <p class="shelf-label">Read in 2026</p>
+          <div class="shelf">
+            <div class="shelf__books shelf__books--left">
+              {readIn2026.map((book) => (
+                <div
+                  class="book"
+                  data-title={book.title}
+                  data-author={book.author}
+                  data-isbn={book.isbn}
+                  data-status={`${'★'.repeat(book.rating)}${'☆'.repeat(5 - book.rating)}`}
+                  style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
+                >
+                  <div class="book__3d">
+                    <div class="book__spine" style={`background: ${getSpineColor(book.color)}; color: ${getTextColor(muteColor(book.color))};`}>
+                      <span class="book__title">{book.title}</span>
+                    </div>
+                    <img
+                      class="book__cover-peek"
+                      src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                      alt={book.title}
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Shelf 3: Five Star Reads in 2025 -->
         <div class="bookshelf-container">
           <p class="shelf-label">Five Star Reads in 2025</p>
           <div class="shelf">
@@ -174,7 +211,7 @@ const stats = {
           </div>
         </div>
 
-        <!-- Shelf 3: Want to Read -->
+        <!-- Shelf 4: Want to Read -->
         <div class="bookshelf-container">
           <p class="shelf-label">Want to Read</p>
           <div class="shelf">
@@ -233,6 +270,10 @@ const stats = {
 
     <!-- Stats -->
     <div class="stats-row">
+      <div class="stat">
+        <span class="stat__number">{stats.booksThisYear}</span>
+        <span class="stat__label">in 2026</span>
+      </div>
       <div class="stat">
         <span class="stat__number">{stats.lastYear}</span>
         <span class="stat__label">in 2025</span>
