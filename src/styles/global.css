@@ -794,8 +794,8 @@ button {
 
 .home-duo {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 3rem;
+  grid-template-columns: 1fr;
+  gap: 4rem;
 }
 
 .section-heading-row {
