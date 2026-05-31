@@ -39,6 +39,23 @@ const experience = [
   },
 ];
 
+const projects = [
+  {
+    name: "SkimpyClaw",
+    url: "https://skimpyclaw.xyz",
+    cta: "Visit site",
+    summary: "A local AI assistant for Telegram and Discord, scheduled routines, coding agents, tools, and a small web dashboard.",
+    tags: ["AI assistant", "Agents", "Cron", "Dashboard"],
+  },
+  {
+    name: "SimpleShelf",
+    url: "https://github.com/kat3samsin/simpleshelf",
+    cta: "View on GitHub",
+    summary: "A zero-dependency 3D bookshelf component for reading lists, Open Library covers, progress, and hover previews.",
+    tags: ["TypeScript", "Books", "Component", "Open Library"],
+  },
+];
+
 const skillTags = [
   "TypeScript",
   "React",
@@ -55,7 +72,97 @@ const skillTags = [
 ];
 
 const githubProfileUrl = "https://github.com/kat3samsin";
-const githubChartUrl = "https://ghchart.rshah.org/4169E1/kat3samsin";
+const githubContributionYear = new Date().getUTCFullYear();
+const githubContributionFrom = `${githubContributionYear}-01-01`;
+const githubContributionTo = `${githubContributionYear}-12-31`;
+const githubContributionsUrl = `https://github.com/users/kat3samsin/contributions?from=${githubContributionFrom}&to=${githubContributionTo}`;
+const githubProfileYearUrl = `${githubProfileUrl}?tab=overview&from=${githubContributionFrom}&to=${githubContributionTo}`;
+const githubContributionDocsUrl = "https://docs.github.com/en/account-and-profile/reference/profile-contributions-reference";
+const githubLegendLevels = [0, 1, 2, 3, 4];
+
+type GithubContribution = {
+  date: string;
+  label: string;
+  level: number;
+  column: number;
+  row: number;
+  url: string;
+};
+
+type GithubMonthLabel = {
+  label: string;
+  column: number;
+};
+
+const githubMonthLabels = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const getHtmlAttribute = (node: string, attribute: string) =>
+  node.match(new RegExp(`${attribute}="([^"]+)"`))?.[1] ?? "";
+const decodeHtml = (value: string) =>
+  value
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+const getGithubWeekColumn = (date: Date) => {
+  const firstDayOfYear = Date.UTC(githubContributionYear, 0, 1);
+  const firstSunday = firstDayOfYear - new Date(firstDayOfYear).getUTCDay() * 24 * 60 * 60 * 1000;
+
+  return Math.floor((date.getTime() - firstSunday) / (7 * 24 * 60 * 60 * 1000)) + 1;
+};
+
+const githubContributionHtml = await fetch(githubContributionsUrl)
+  .then((response) => (response.ok ? response.text() : ""))
+  .catch(() => "");
+const githubContributionTotal = decodeHtml(githubContributionHtml)
+  .match(new RegExp(`([\\d,]+) contributions in ${githubContributionYear}`))?.[1] ?? "";
+const githubContributionTitle = githubContributionTotal
+  ? `${githubContributionTotal} contributions in ${githubContributionYear}`
+  : `GitHub contributions in ${githubContributionYear}`;
+const githubDayNodes = Array.from(
+  githubContributionHtml.matchAll(/(<td\b[^>]*ContributionCalendar-day[^>]*><\/td>)\s*<tool-tip\b[^>]*>([\s\S]*?)<\/tool-tip>/g)
+);
+const githubContributions = githubDayNodes
+  .map((match): GithubContribution | null => {
+    const node = match[1];
+    const date = getHtmlAttribute(node, "data-date");
+    const level = Number.parseInt(getHtmlAttribute(node, "data-level"), 10);
+    const column = Number.parseInt(getHtmlAttribute(node, "data-ix"), 10) + 1;
+    const parsedDate = new Date(`${date}T00:00:00.000Z`);
+
+    if (!date || !Number.isFinite(level) || !Number.isFinite(column) || Number.isNaN(parsedDate.getTime())) {
+      return null;
+    }
+
+    return {
+      date,
+      label: decodeHtml(match[2]),
+      level: Math.min(Math.max(level, 0), 4),
+      column,
+      row: parsedDate.getUTCDay() + 1,
+      url: `${githubProfileUrl}?tab=overview&from=${date}&to=${date}`,
+    };
+  })
+  .filter((day): day is GithubContribution => day !== null);
+const githubMonthPositions: GithubMonthLabel[] = githubMonthLabels.map((label, index) => ({
+  label,
+  column: getGithubWeekColumn(new Date(Date.UTC(githubContributionYear, index, 1))),
+}));
 
 // Currently Reading - shelf style
 const currentlyReading = [
@@ -182,6 +289,37 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
     </div>
   </section>
 
+  <section id="projects" class="home-section section-grid">
+    <div class="section-intro">
+      <p class="section-label">Projects</p>
+      <h2>Personal builds</h2>
+    </div>
+    <div class="project-list">
+      {projects.map((project) => (
+        <article class="project-row">
+          <div class="project-row__main">
+            <h3>
+              <a href={project.url} target="_blank" rel="noopener">
+                {project.name}
+              </a>
+            </h3>
+            <p>{project.summary}</p>
+          </div>
+          <div class="project-row__meta">
+            <div class="project-tags" aria-label={`${project.name} tags`}>
+              {project.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+            <a href={project.url} target="_blank" rel="noopener" class="project-link">
+              {project.cta}
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
   <section id="skills" class="home-section section-grid">
     <div class="section-intro">
       <p class="section-label">Skills</p>
@@ -196,12 +334,9 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
 
       <div class="github-activity">
         <div class="github-activity__header">
-          <div>
-            <span>GitHub activity</span>
-            <strong>@kat3samsin</strong>
-          </div>
+          <h3>{githubContributionTitle}</h3>
           <a
-            href={githubProfileUrl}
+            href={githubProfileYearUrl}
             target="_blank"
             rel="noopener"
             class="github-activity__profile"
@@ -209,13 +344,57 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
             View profile
           </a>
         </div>
-        <div class="github-activity__chart">
-          <img
-            src={githubChartUrl}
-            alt="GitHub contribution chart for kat3samsin"
-            loading="lazy"
-          />
-        </div>
+        {githubContributions.length > 0 ? (
+          <div class="github-activity__card">
+            <div class="github-calendar" role="group" aria-label="GitHub contribution activity for kat3samsin">
+              <div class="github-calendar__inner">
+                <div class="github-calendar__months" aria-hidden="true">
+                  {githubMonthPositions.map((month) => (
+                    <span style={`grid-column: ${month.column};`}>{month.label}</span>
+                  ))}
+                </div>
+                <div class="github-calendar__weekdays" aria-hidden="true">
+                  <span style="grid-row: 2;">Mon</span>
+                  <span style="grid-row: 4;">Wed</span>
+                  <span style="grid-row: 6;">Fri</span>
+                </div>
+                <div class="github-calendar__grid">
+                  {githubContributions.map((day) => (
+                    <a
+                      href={day.url}
+                      target="_blank"
+                      rel="noopener"
+                      class={`github-day github-day--${day.level}`}
+                      style={`grid-column: ${day.column}; grid-row: ${day.row};`}
+                      title={day.label}
+                      aria-label={day.label}
+                    >
+                      <span class="sr-only">{day.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div class="github-activity__footer">
+              <a href={githubContributionDocsUrl} target="_blank" rel="noopener" class="github-activity__learn">
+                Learn how we count contributions
+              </a>
+              <div class="github-activity__legend" aria-hidden="true">
+                <span>Less</span>
+                <div class="github-activity__legend-cells">
+                  {githubLegendLevels.map((level) => (
+                    <span class={`github-legend-cell github-day--${level}`}></span>
+                  ))}
+                </div>
+                <span>More</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p class="github-activity__fallback">
+            Contribution activity is available on GitHub.
+          </p>
+        )}
       </div>
     </div>
   </section>
@@ -226,8 +405,13 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
       <h2>Off the laptop</h2>
     </div>
     <p class="about-copy">
-      My mini human, Charlie and Zoey, a too-large book stack, home-roasted coffee,
-      cooking, road miles, gym reps, and family trips.
+      Outside of work, life revolves around my family and my mini human, my two cats
+      Charlie and Zoey, and a collection of hobbies that somehow keep growing. You'll
+      usually find me adding another plant to the house, working through an ever-expanding
+      reading list, experimenting with coffee, trying new recipes in the kitchen, logging
+      miles on the road, lifting weights, or planning the next family adventure. I'm
+      happiest when I'm learning something new, building something useful, or spending
+      time with the people and pets I care about most.
     </p>
   </section>
 
