@@ -11,7 +11,7 @@ const experience = [
     company: "Automattic",
     team: "AI Team",
     role: "Applied AI Engineer",
-    period: "2025 — Present",
+    period: "2025 - Present",
     logo: "automattic",
     url: "https://automattic.com",
   },
@@ -19,36 +19,49 @@ const experience = [
     company: "Automattic",
     team: "WordPress VIP",
     role: "Senior Software Engineer",
-    period: "2022 — 2025",
+    period: "2022 - 2025",
     logo: "automattic",
     url: "https://wpvip.com",
   },
   {
     company: "Oracle",
     role: "Engineering Manager",
-    period: "2019 — 2022",
+    period: "2019 - 2022",
     logo: "oracle",
     url: "https://oracle.com",
   },
   {
     company: "Oracle",
     role: "Principal Software Engineer",
-    period: "2012 — 2019",
+    period: "2012 - 2019",
     logo: "oracle",
     url: "https://oracle.com",
   },
 ];
 
-// Skills
-const skills = ["TypeScript", "React", "Next.js", "GraphQL", "NestJS", "Node.js", "Jest", "Kubernetes", "A11Y", "WordPress"];
+const skillTags = [
+  "TypeScript",
+  "React",
+  "Next.js",
+  "WordPress",
+  "MCP",
+  "AI agents",
+  "Image generation",
+  "Node.js",
+  "GraphQL",
+  "Jest",
+  "Accessibility",
+  "Kubernetes",
+];
+
+const githubProfileUrl = "https://github.com/kat3samsin";
+const githubChartUrl = "https://ghchart.rshah.org/4169E1/kat3samsin";
 
 // Currently Reading - shelf style
 const currentlyReading = [
-  { title: "Light Bringer", author: "Pierce Brown", isbn: "9780425285978", progress: 5, pages: 704, color: "#8B0000", gap: 35, tilt: 2 },
-  { title: "The Correspondent", author: "Virginia Evans", isbn: "9780593798430", progress: 10, pages: 288, color: "#E8D5B7", gap: 26, tilt: -2 },
-  { title: "AI Engineering", author: "Chip Huyen", isbn: "9781098166304", progress: 25, pages: 450, color: "#4B0082", gap: 32, tilt: -3 },
-  { title: "Rogue Protocol", author: "Martha Wells", isbn: "9781250185433", progress: 60, pages: 160, color: "#1D8A8A", gap: 28, tilt: 4 },
-  { title: "Four Thousand Weeks", author: "Oliver Burkeman", isbn: "9780374715243", progress: 15, pages: 288, color: "#E07B39", gap: 30, tilt: -2 },
+  { title: "Everything Is Tuberculosis", author: "John Green", isbn: "9780525556572", progress: 0, pages: 198, color: "#2F6B4F", gap: 28, tilt: 2 },
+  { title: "My Friends", author: "Fredrik Backman", isbn: "9781982112820", progress: 0, pages: 448, color: "#2B6F8A", gap: 32, tilt: -2 },
+  { title: "Shift", author: "Hugh Howey", isbn: "9780544839649", progress: 0, pages: 576, color: "#30353B", gap: 34, tilt: 3 },
 ];
 
 // Helper functions for shelf
@@ -79,24 +92,74 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
 ---
 
 <Layout>
-  <!-- Hero Section - Terminal Style -->
-  <section class="mb-[var(--spacing-section)]">
-    <p class="text-[var(--color-accent)] mb-2 text-sm">~ katrina</p>
-    <h1 class="mb-6">
-      <span class="text-[var(--color-accent)]">/whoami</span> Howdy, I'm Katrina!
-    </h1>
-    <p class="text-[var(--color-text-secondary)] max-w-lg leading-relaxed">
-      Claude whisperer, Applied AI Engineer at <a href="https://automattic.com" target="_blank" rel="noopener" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">Automattic AI</a>. Shaping the future of WordPress with AI.
-    </p>
+  <section class="home-cover" aria-labelledby="intro-title">
+    <div class="home-cover__mast">
+      <h1 id="intro-title">Katrina Tantay</h1>
+      <p class="home-subtitle">
+        Engineer. Product thinker. <span>AI whisperer.</span>
+      </p>
+    </div>
+    <div class="home-cover__brief">
+      <p>
+        I build AI-powered products that hold up in production.
+      </p>
+      <p>
+        At Automattic, I work across chat, image generation, agent systems, MCP tools,
+        and the platform infrastructure that supports them. My focus is bridging
+        product, engineering, and AI to create experiences that are useful and dependable.
+      </p>
+      <p>
+        I care about quality. The most interesting work starts after the demo:
+        understanding model behavior, polishing user experiences, improving accessibility,
+        testing, and handling the messy edge cases real users uncover.
+      </p>
+      <nav class="home-socials" aria-label="Contact and profile links">
+        <a href="mailto:hi@katrinatantay.com" aria-label="Email" title="Email">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm-.4 4.25-7.06 4.41a1 1 0 0 1-1.08 0L4.4 8.25V6.5L12 11.25l7.6-4.75v1.75Z" />
+          </svg>
+        </a>
+        <a href="https://github.com/kat3samsin" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.23c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.69.83.57A12.01 12.01 0 0 0 24 12c0-6.63-5.37-12-12-12Z" />
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/katrinatantay/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13Zm1.78 13.02H3.56V9h3.56v11.45ZM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.23 0Z" />
+          </svg>
+        </a>
+      </nav>
+    </div>
   </section>
 
-  <!-- CV / Experience Section -->
-  <section id="cv" class="mb-[var(--spacing-section)]">
-    <h2 class="section-header" aria-label="Experience">/cv</h2>
-    <div class="space-y-4">
+  <section class="profile-ledger" aria-label="Snapshot">
+    <div class="snapshot-strip__item">
+      <span>Now</span>
+      <strong>Automattic AI</strong>
+      <p>Applied AI Engineer</p>
+    </div>
+    <div class="snapshot-strip__item">
+      <span>Before</span>
+      <strong>WordPress VIP + Oracle</strong>
+      <p>Senior IC, manager, platform work</p>
+    </div>
+    <div class="snapshot-strip__item">
+      <span>Stack</span>
+      <strong>TypeScript to WordPress</strong>
+      <p>React, APIs, tests, accessibility</p>
+    </div>
+  </section>
+
+  <section id="cv" class="home-section section-grid">
+    <div class="section-intro">
+      <p class="section-label">CV</p>
+      <h2>Experience</h2>
+    </div>
+    <div class="experience-list">
       {experience.map((job) => (
-        <div class="dotted-item group">
-          <a href={job.url} target="_blank" rel="noopener" class="company-logo" title={job.company}>
+        <article class="experience-row">
+          <a href={job.url} target="_blank" rel="noopener" class="company-logo" aria-label={job.company}>
             {job.logo === "automattic" && (
               <svg viewBox="0 0 64 64" fill="currentColor" class="w-5 h-5">
                 <path d="M53.62 31.294c0-10.583-7.66-20.057-21.67-20.057-13.9 0-21.57 9.474-21.57 20.057v1.3c0 10.583 7.66 20.157 21.57 20.157 14 0 21.67-9.575 21.67-20.157zM31.95 61.43C12.598 61.43 0 47.42 0 32.907v-1.814C0 16.277 12.598 2.57 31.95 2.57 51.402 2.57 64 16.277 64 31.093v1.814C64 47.42 51.402 61.43 31.95 61.43z"/>
@@ -109,98 +172,125 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
               </svg>
             )}
           </a>
-          <div class="dotted-item__content">
-            <div class="flex items-baseline gap-2 flex-wrap">
-              <span class="font-medium">{job.role}</span>
-              <span class="text-[var(--color-text-secondary)]">{job.company}</span>
-              {job.team && <span class="text-[var(--color-text-secondary)]">| {job.team}</span>}
-            </div>
-            <span class="dotted-item__dots" aria-hidden="true"></span>
-            <span class="text-sm text-[var(--color-text-secondary)] whitespace-nowrap">{job.period}</span>
+          <div class="experience-row__main">
+            <h3>{job.role}</h3>
+            <p>{job.company}{job.team && <span> · {job.team}</span>}</p>
           </div>
+          <time>{job.period}</time>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="skills" class="home-section section-grid">
+    <div class="section-intro">
+      <p class="section-label">Skills</p>
+      <h2>Tools and activity</h2>
+    </div>
+    <div class="skills-stack">
+      <div class="skill-cloud" aria-label="Skills">
+        {skillTags.map((skill) => (
+          <span class="tag">{skill}</span>
+        ))}
+      </div>
+
+      <div class="github-activity">
+        <div class="github-activity__header">
+          <div>
+            <span>GitHub activity</span>
+            <strong>@kat3samsin</strong>
+          </div>
+          <a
+            href={githubProfileUrl}
+            target="_blank"
+            rel="noopener"
+            class="github-activity__profile"
+          >
+            View profile
+          </a>
         </div>
-      ))}
+        <div class="github-activity__chart">
+          <img
+            src={githubChartUrl}
+            alt="GitHub contribution chart for kat3samsin"
+            loading="lazy"
+          />
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Skills Section -->
-  <section id="skills" class="mb-[var(--spacing-section)]">
-    <h2 class="section-header" aria-label="Skills">/skills</h2>
-    <div class="flex flex-wrap gap-2">
-      {skills.map((skill) => (
-        <span class="tag">{skill}</span>
-      ))}
+  <section id="about" class="home-section section-grid">
+    <div class="section-intro">
+      <p class="section-label">About</p>
+      <h2>Off the laptop</h2>
     </div>
-  </section>
-
-  <!-- About Section -->
-  <section id="about" class="mb-[var(--spacing-section)]">
-    <h2 class="section-header" aria-label="About">/about</h2>
-    <p class="text-[var(--color-text-secondary)] leading-relaxed">
-      When I'm not chatting with Claude, you'll find me wrangling my mini human, loving on my cats Charlie & Zoey, lost in a good book, cooking up something delicious, roasting and brewing my own coffee, chasing miles on the road or reps in the gym—exploring the world with my family, one adventure at a time.
+    <p class="about-copy">
+      My mini human, Charlie and Zoey, a too-large book stack, home-roasted coffee,
+      cooking, road miles, gym reps, and family trips.
     </p>
   </section>
 
-  <!-- Writing / Musings Section -->
-  <section class="mb-[var(--spacing-section)]">
-    <div class="flex items-center justify-between mb-[var(--spacing-lg)]">
-      <h2 class="section-header mb-0" aria-label="Musings">/musings</h2>
-      <a href="/musings" class="text-xs font-normal normal-case tracking-normal text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">All Musings →</a>
+  <section class="home-section home-duo" aria-label="Writing and reading">
+    <div>
+      <div class="section-heading-row">
+        <div>
+          <p class="section-label">Musings</p>
+          <h2>Recent writing</h2>
+        </div>
+        <a href="/musings" class="section-link">All musings</a>
+      </div>
+      {posts.length > 0 ? (
+        <div class="post-list">
+          {posts.map((post) => (
+            <article class="post-item">
+              <a href={`/musings/${post.slug}`}>
+                <time>{post.formattedDate}</time>
+                <h3>{post.title}</h3>
+              </a>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>Posts coming soon.</p>
+        </div>
+      )}
     </div>
-    {posts.length > 0 ? (
-      <div class="space-y-4">
-        {posts.map((post) => (
-          <article class="group">
-            <a href={`/musings/${post.slug}`} class="block">
-              <time class="text-xs text-[var(--color-text-secondary)]">
-                {post.formattedDate}
-              </time>
-              <h3 class="font-medium group-hover:text-[var(--color-accent)] transition-colors">
-                {post.title}
-              </h3>
-            </a>
-          </article>
+
+    <div>
+      <div class="section-heading-row">
+        <div>
+          <p class="section-label">Library</p>
+          <h2>Currently reading</h2>
+        </div>
+        <a href="/library" class="section-link">My library</a>
+      </div>
+      <div class="home-shelf">
+        {currentlyReading.map((book) => (
+          <a
+            href="/library"
+            class="home-book"
+            aria-label={`${book.title} by ${book.author}`}
+            style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
+          >
+            <div class="home-book__3d">
+              <div class="home-book__spine" style={`background: ${getSpineColor(book.color)}; color: ${getTextColor(muteColor(book.color))};`}>
+                <span class="home-book__title">{book.title}</span>
+                <div class="home-book__progress">
+                  <div class="home-book__progress-bar" style={`width: ${book.progress}%`}></div>
+                </div>
+              </div>
+              <img
+                class="home-book__cover"
+                src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                alt=""
+                loading="lazy"
+              />
+            </div>
+          </a>
         ))}
       </div>
-    ) : (
-      <div class="py-8 text-center">
-        <p class="text-[var(--color-text-secondary)] text-sm">
-          Posts coming soon.
-        </p>
-      </div>
-    )}
-  </section>
-
-  <!-- Currently Reading Section - Shelf Style -->
-  <section class="mb-[var(--spacing-section)]">
-    <div class="flex items-center justify-between mb-[var(--spacing-lg)]">
-      <h2 class="section-header mb-0" aria-label="Currently Reading">/library</h2>
-      <a href="/library" class="text-xs font-normal normal-case tracking-normal text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">My Library →</a>
-    </div>
-    <p class="text-[var(--color-text-secondary)] text-xs uppercase tracking-wider mb-3">Currently Reading</p>
-    <div class="home-shelf">
-      {currentlyReading.map((book) => (
-        <a
-          href="/library"
-          class="home-book"
-          style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
-        >
-          <div class="home-book__3d">
-            <div class="home-book__spine" style={`background: ${getSpineColor(book.color)}; color: ${getTextColor(muteColor(book.color))};`}>
-              <span class="home-book__title">{book.title}</span>
-              <div class="home-book__progress">
-                <div class="home-book__progress-bar" style={`width: ${book.progress}%`}></div>
-              </div>
-            </div>
-            <img
-              class="home-book__cover"
-              src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
-              alt={book.title}
-              loading="lazy"
-            />
-          </div>
-        </a>
-      ))}
     </div>
   </section>
 

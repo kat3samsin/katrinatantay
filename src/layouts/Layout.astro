@@ -7,8 +7,8 @@ interface Props {
 }
 
 const {
-  title = "Katrina Tantay — Applied AI Engineer",
-  description = "Applied AI Engineer at WordPress. Shaping the future of content with AI. Building secure, accessible, and inclusive web applications."
+  title = "Katrina Tantay | Applied AI Engineer",
+  description = "Applied AI Engineer at WordPress, working on AI chat, image generation, MCP tools, provider/eval plumbing, UI polish, tests, accessibility, and production edge cases."
 } = Astro.props;
 
 const currentPath = Astro.url.pathname;
@@ -23,11 +23,15 @@ const currentPath = Astro.url.pathname;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- JetBrains Mono as the monospace font -->
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Newsreader:opsz,wght@6..72,600;6..72,700&display=swap" rel="stylesheet" />
     <title>{title}</title>
     <!-- Prevent flash of wrong theme -->
     <script is:inline>
+      const themeDefaultVersion = 'white-default-2026-05-30-2';
+      if (localStorage.getItem('theme-default-version') !== themeDefaultVersion) {
+        localStorage.setItem('theme', 'default');
+        localStorage.setItem('theme-default-version', themeDefaultVersion);
+      }
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme && savedTheme !== 'default') {
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -44,11 +48,11 @@ const currentPath = Astro.url.pathname;
         margin-top: 0.5rem;
         background: var(--color-surface);
         border: 1px solid var(--color-border);
-        border-radius: 0.5rem;
+        border-radius: 0.375rem;
         padding: 0.25rem;
         min-width: 140px;
         z-index: 50;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 18px 42px rgba(31, 36, 33, 0.16);
       }
       .theme-menu button {
         display: block;
@@ -70,33 +74,27 @@ const currentPath = Astro.url.pathname;
     </style>
   </head>
   <body class="min-h-screen">
-    <div class="max-w-2xl mx-auto px-6 py-12 md:py-16 lg:py-20">
-      <header class="mb-[var(--spacing-section)]">
-        <nav class="flex items-center justify-between">
-          <a
-            href="/"
-            class="font-semibold tracking-tight hover:text-[var(--color-accent)] transition-colors"
-          >
-            Katrina Tantay
-          </a>
-          <div class="flex items-center gap-6 text-sm">
+    <div class="site-shell">
+      <header class="site-header">
+        <nav class="site-nav">
+          <div class="site-nav__links">
             <a
               href="/#cv"
-              class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+              class="site-nav__link"
             >
               CV
             </a>
             <a
               href="/#about"
-              class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+              class="site-nav__link"
             >
               About
             </a>
             <a
               href="/library"
               class:list={[
-                "transition-colors",
-                currentPath.startsWith("/library") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                "site-nav__link",
+                currentPath.startsWith("/library") && "is-active"
               ]}
             >
               Library
@@ -104,8 +102,8 @@ const currentPath = Astro.url.pathname;
             <a
               href="/musings"
               class:list={[
-                "transition-colors",
-                currentPath.startsWith("/musings") ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                "site-nav__link",
+                currentPath.startsWith("/musings") && "is-active"
               ]}
             >
               Musings
@@ -113,7 +111,7 @@ const currentPath = Astro.url.pathname;
             <div class="theme-picker">
               <button
                 id="theme-toggle"
-                class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-1"
+                class="theme-toggle"
                 aria-label="Change theme"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -125,7 +123,7 @@ const currentPath = Astro.url.pathname;
                 </svg>
               </button>
               <div id="theme-menu" class="theme-menu hidden">
-                <button data-theme="default">Cloud Dancer</button>
+                <button data-theme="default">White Light</button>
                 <button data-theme="claude-code">Claude Code</button>
                 <button data-theme="one-dark">One Dark Pro</button>
                 <button data-theme="dracula">Dracula</button>
@@ -142,17 +140,17 @@ const currentPath = Astro.url.pathname;
         <slot />
       </main>
 
-      <footer class="mt-[var(--spacing-section)] pt-8">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-[var(--color-text-secondary)]">
+      <footer class="site-footer">
+        <div class="site-footer__inner">
           <span>&copy; {new Date().getFullYear()} Katrina Tantay</span>
-          <div class="flex items-center gap-4">
-            <a href="https://github.com/kat3samsin" target="_blank" rel="noopener" class="hover:text-[var(--color-text-primary)] transition-colors">
+          <div class="site-footer__links">
+            <a href="https://github.com/kat3samsin" target="_blank" rel="noopener">
               GitHub
             </a>
-            <a href="https://www.linkedin.com/in/katrinatantay/" target="_blank" rel="noopener" class="hover:text-[var(--color-text-primary)] transition-colors">
+            <a href="https://www.linkedin.com/in/katrinatantay/" target="_blank" rel="noopener">
               LinkedIn
             </a>
-            <a href="mailto:hi@katrinatantay.com" class="hover:text-[var(--color-text-primary)] transition-colors">
+            <a href="mailto:hi@katrinatantay.com">
               Email
             </a>
           </div>
@@ -176,6 +174,7 @@ const currentPath = Astro.url.pathname;
           document.documentElement.setAttribute('data-theme', theme);
         }
         localStorage.setItem('theme', theme);
+        localStorage.setItem('theme-default-version', 'white-default-2026-05-30-2');
         updateActiveButton();
       }
 

@@ -33,7 +33,7 @@ const wpPostUrl = getWordPressPostUrl(post.slug);
 
   <!-- Comments Section -->
   <section class="mt-16 pt-8 border-t border-[var(--color-border)]">
-    <h2 class="section-header" aria-label="Comments">/comments</h2>
+    <h2 class="section-header" aria-label="Comments">Comments</h2>
 
     {comments.length > 0 ? (
       <div class="comments-list">
@@ -149,7 +149,7 @@ const wpPostUrl = getWordPressPostUrl(post.slug);
   }
 
   .prose-content :global(code) {
-    font-family: 'SF Mono', Monaco, monospace;
+    font-family: var(--font-mono);
     font-size: 0.9em;
   }
 

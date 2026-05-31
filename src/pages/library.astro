@@ -3,16 +3,24 @@ import Layout from '../layouts/Layout.astro';
 
 // Currently Reading - with page counts and cover-matched colors
 const currentlyReading = [
-  { title: "Light Bringer", author: "Pierce Brown", isbn: "9780425285978", progress: 5, pages: 704, color: "#8B0000", gap: 35, tilt: 2 },
-  { title: "The Correspondent", author: "Virginia Evans", isbn: "9780593798430", progress: 10, pages: 288, color: "#E8D5B7", gap: 26, tilt: -2 },
-  { title: "AI Engineering", author: "Chip Huyen", isbn: "9781098166304", progress: 25, pages: 450, color: "#4B0082", gap: 32, tilt: -3 },
-  { title: "Rogue Protocol", author: "Martha Wells", isbn: "9781250185433", progress: 60, pages: 160, color: "#1D8A8A", gap: 28, tilt: 4 },
-  { title: "Four Thousand Weeks", author: "Oliver Burkeman", isbn: "9780374715243", progress: 15, pages: 288, color: "#E07B39", gap: 30, tilt: -2 },
+  { title: "Everything Is Tuberculosis", author: "John Green", isbn: "9780525556572", progress: 0, pages: 198, color: "#2F6B4F", gap: 28, tilt: 2 },
+  { title: "My Friends", author: "Fredrik Backman", isbn: "9781982112820", progress: 0, pages: 448, color: "#2B6F8A", gap: 32, tilt: -2 },
+  { title: "Shift", author: "Hugh Howey", isbn: "9780544839649", progress: 0, pages: 576, color: "#30353B", gap: 34, tilt: 3 },
 ];
 
 // Read in 2026
 const readIn2026 = [
-  { title: "Dark Age", author: "Pierce Brown", isbn: "9780425285961", rating: 4, pages: 800, color: "#1a1a1a", gap: 35, tilt: 2 },
+  { title: "WOOL", author: "Hugh Howey", isbn: "9780358447849", pages: 584, color: "#30353B", gap: 34, tilt: 2, status: "Finished" },
+  { title: "The Stand", author: "Stephen King", isbn: "9780525616719", pages: 1152, color: "#3A2F2A", gap: 38, tilt: -2, status: "Finished" },
+  { title: "Anxious People", author: "Fredrik Backman", isbn: "9781501160844", pages: 352, color: "#4ECDC4", gap: 30, tilt: 3, status: "Finished" },
+  { title: "The Housemaid Is Watching", author: "Freida McFadden", isbn: "9781464228711", pages: 336, color: "#8B0000", gap: 30, tilt: -2, status: "3.5 stars" },
+  { title: "The Housemaid's Secret", author: "Freida McFadden", isbn: "9781538742570", pages: 336, color: "#8B0000", gap: 30, tilt: 2, status: "3 stars" },
+  { title: "The Housemaid", author: "Freida McFadden", isbn: "9781538742570", pages: 300, color: "#8B0000", gap: 28, tilt: -3, status: "4 stars" },
+  { title: "Yellowface", author: "R.F. Kuang", isbn: "9780063250833", pages: 336, color: "#8B0000", gap: 30, tilt: 2, status: "4 stars" },
+  { title: "The Correspondent", author: "Virginia Evans", isbn: "9780593798430", pages: 300, color: "#8B4513", gap: 28, tilt: -2, status: "4 stars" },
+  { title: "His & Hers", author: "Alice Feeney", isbn: "9781250622198", pages: 336, color: "#C71585", gap: 30, tilt: 3, status: "4 stars" },
+  { title: "Light Bringer", author: "Pierce Brown", isbn: "9780425285978", pages: 672, color: "#D4AF37", gap: 35, tilt: -2, status: "5 stars" },
+  { title: "Dark Age", author: "Pierce Brown", isbn: "9780425285947", pages: 800, color: "#1C1C1C", gap: 38, tilt: 2, status: "4 stars" },
 ];
 
 // 2025 Five-Star Reads - All on one shelf
@@ -71,20 +79,22 @@ function isLightColor(hex: string): boolean {
   return luminance > 0.5;
 }
 const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffffff';
+const getBookStatus = (book: { rating?: number; status?: string }) =>
+  book.status ?? `${'★'.repeat(book.rating ?? 0)}${'☆'.repeat(5 - (book.rating ?? 0))}`;
 
 const stats = {
   year: 2026,
-  booksThisYear: 1,
+  booksThisYear: 11,
   lastYear: 42,
   fiveStars: 17,
-  lifetime: 136,
+  lifetime: 146,
 };
 ---
 
 <Layout title="My Library - Katrina Tantay">
   <section>
     <div class="mb-8">
-      <h1 class="text-2xl font-semibold mb-2" aria-label="My Library">/library</h1>
+      <h1 class="text-2xl font-semibold mb-2" aria-label="My Library">Library</h1>
       <p class="text-[var(--color-text-secondary)] text-sm mb-4">
         A peek at what's on my shelf and the books that have shaped my year.
       </p>
@@ -163,7 +173,7 @@ const stats = {
                   data-title={book.title}
                   data-author={book.author}
                   data-isbn={book.isbn}
-                  data-status={`${'★'.repeat(book.rating)}${'☆'.repeat(5 - book.rating)}`}
+                  data-status={getBookStatus(book)}
                   style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
                 >
                   <div class="book__3d">
