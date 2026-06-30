@@ -5,11 +5,12 @@ import Layout from '../layouts/Layout.astro';
 const currentlyReading = [
   { title: "Everything Is Tuberculosis", author: "John Green", isbn: "9780525556572", progress: 0, pages: 198, color: "#2F6B4F", gap: 28, tilt: 2 },
   { title: "My Friends", author: "Fredrik Backman", isbn: "9781982112820", progress: 0, pages: 448, color: "#2B6F8A", gap: 32, tilt: -2 },
-  { title: "Shift", author: "Hugh Howey", isbn: "9780544839649", progress: 0, pages: 576, color: "#30353B", gap: 34, tilt: 3 },
 ];
 
 // Read in 2026
 const readIn2026 = [
+  { title: "Dust", author: "Hugh Howey", isbn: "1490904387", pages: 464, color: "#30353B", gap: 34, tilt: 3, status: "Finished" },
+  { title: "Shift", author: "Hugh Howey", isbn: "9780544839649", pages: 576, color: "#30353B", gap: 34, tilt: 3, status: "Finished" },
   { title: "WOOL", author: "Hugh Howey", isbn: "9780358447849", pages: 584, color: "#30353B", gap: 34, tilt: 2, status: "Finished" },
   { title: "The Stand", author: "Stephen King", isbn: "9780525616719", pages: 1152, color: "#3A2F2A", gap: 38, tilt: -2, status: "Finished" },
   { title: "Anxious People", author: "Fredrik Backman", isbn: "9781501160844", pages: 352, color: "#4ECDC4", gap: 30, tilt: 3, status: "Finished" },
@@ -25,28 +26,34 @@ const readIn2026 = [
 
 // 2025 Five-Star Reads - All on one shelf
 const fiveStarReads = [
-  { title: "Remarkably Bright Creatures", author: "Shelby Van Pelt", isbn: "9780063204157", rating: 5, favorite: true, pages: 368, color: "#D97757", gap: 32, tilt: 3 },
+  { title: "Seven Husbands of Evelyn Hugo", author: "Taylor Jenkins Reid", isbn: "9781501139239", rating: 5, pages: 400, color: "#D4AF37", gap: 30, tilt: -2 },
+  { title: "Remarkably Bright Creatures", author: "Shelby Van Pelt", isbn: "9780063204157", rating: 5, favorite: true, pages: 368, color: "#FF6347", gap: 32, tilt: 3 },
+  { title: "Iron Gold", author: "Pierce Brown", isbn: "9780425285916", rating: 5, pages: 596, color: "#B8860B", gap: 34, tilt: -2 },
   { title: "Project Hail Mary", author: "Andy Weir", isbn: "9780593135204", rating: 5, pages: 496, color: "#1C1C1C", gap: 30, tilt: -2 },
   { title: "The Passage", author: "Justin Cronin", isbn: "9780345504968", rating: 5, pages: 879, color: "#0F1626", gap: 38, tilt: 4 },
-  { title: "Mistborn", author: "Brandon Sanderson", isbn: "9780765311788", rating: 5, pages: 672, color: "#4A4A4A", gap: 35, tilt: -3 },
-  { title: "Dark Matter", author: "Blake Crouch", isbn: "9781101904220", rating: 5, pages: 342, color: "#0D1B2A", gap: 28, tilt: 2 },
-  { title: "1984", author: "George Orwell", isbn: "9780451524935", rating: 5, pages: 328, color: "#C41E3A", gap: 26, tilt: -4 },
-  { title: "Morning Star", author: "Pierce Brown", isbn: "9780345539847", rating: 5, pages: 518, color: "#CFB53B", gap: 32, tilt: 3 },
-  { title: "Golden Son", author: "Pierce Brown", isbn: "9780345539816", rating: 5, pages: 464, color: "#B8860B", gap: 30, tilt: -2 },
   { title: "Mockingjay", author: "Suzanne Collins", isbn: "9780439023511", rating: 5, pages: 390, color: "#1A1A1A", gap: 28, tilt: 4 },
-  { title: "Catching Fire", author: "Suzanne Collins", isbn: "9780439023498", rating: 5, pages: 400, color: "#E85D04", gap: 28, tilt: -3 },
+  { title: "Catching Fire", author: "Suzanne Collins", isbn: "9780439023498", rating: 5, pages: 391, color: "#FF4500", gap: 28, tilt: -3 },
   { title: "Hunger Games", author: "Suzanne Collins", isbn: "9780439023481", rating: 5, pages: 374, color: "#2D2D2D", gap: 30, tilt: 2 },
+  { title: "Sunrise on the Reaping", author: "Suzanne Collins", isbn: "9781546171461", rating: 5, pages: 400, color: "#FF8C00", gap: 30, tilt: -2 },
+  { title: "Dark Matter", author: "Blake Crouch", isbn: "9781101904220", rating: 5, pages: 342, color: "#0D1B2A", gap: 28, tilt: 2 },
+  { title: "Morning Star", author: "Pierce Brown", isbn: "9780345539847", rating: 5, pages: 524, color: "#C41E3A", gap: 32, tilt: 3 },
+  { title: "Golden Son", author: "Pierce Brown", isbn: "9780345539830", rating: 5, pages: 464, color: "#D4AF37", gap: 30, tilt: -2 },
+  { title: "1984", author: "George Orwell", isbn: "9780451524935", rating: 5, pages: 328, color: "#C41E3A", gap: 26, tilt: -4 },
+  { title: "Hero of Ages", author: "Brandon Sanderson", isbn: "9780765316899", rating: 5, pages: 748, color: "#4A5568", gap: 36, tilt: 2 },
+  { title: "Well of Ascension", author: "Brandon Sanderson", isbn: "9780765316882", rating: 5, pages: 796, color: "#2F4F4F", gap: 38, tilt: -2 },
+  { title: "Mistborn", author: "Brandon Sanderson", isbn: "9780765311788", rating: 5, pages: 672, color: "#2F2F2F", gap: 35, tilt: -3 },
   { title: "Crying in H Mart", author: "Michelle Zauner", isbn: "9780525657743", rating: 5, pages: 256, color: "#E8B4BC", gap: 24, tilt: -2 },
 ];
 
 // Want to Read
 const wantToRead = [
-  { title: "Anxious People", author: "Fredrik Backman", isbn: "9781501160837", pages: 400, color: "#4ECDC4", gap: 30, tilt: 3 },
-  { title: "House in Cerulean Sea", author: "T.J. Klune", isbn: "9781250217318", pages: 398, color: "#5D93C4", gap: 28, tilt: -2 },
-  { title: "Educated", author: "Tara Westover", isbn: "9780399590504", pages: 352, color: "#2C3E50", gap: 28, tilt: 4 },
-  { title: "Piranesi", author: "Susanna Clarke", isbn: "9781635575637", pages: 272, color: "#7B8D8E", gap: 24, tilt: -3 },
-  { title: "Secret History", author: "Donna Tartt", isbn: "9781400031702", pages: 559, color: "#1A1A1A", gap: 34, tilt: 2 },
+  { title: "Educated", author: "Tara Westover", isbn: "9780399590504", pages: 352, color: "#2E4A3E", gap: 28, tilt: 4 },
+  { title: "Piranesi", author: "Susanna Clarke", isbn: "9781635575637", pages: 272, color: "#87CEEB", gap: 24, tilt: -3 },
+  { title: "Secret History", author: "Donna Tartt", isbn: "9781400031702", pages: 559, color: "#1C1C1C", gap: 34, tilt: 2 },
   { title: "Lessons in Chemistry", author: "Bonnie Garmus", isbn: "9780385547345", pages: 400, color: "#F5DEB3", gap: 28, tilt: -2 },
+  { title: "Demon Copperhead", author: "Barbara Kingsolver", isbn: "9780063251922", pages: 560, color: "#8B0000", gap: 34, tilt: 3 },
+  { title: "Four Thousand Weeks", author: "Oliver Burkeman", isbn: "9781784704001", pages: 288, color: "#3E5C4A", gap: 26, tilt: -2 },
+  { title: "Rogue Protocol", author: "Martha Wells", isbn: "9781250185433", pages: 160, color: "#2F4F4F", gap: 24, tilt: 3 },
 ];
 
 // Helper to calculate thickness based on pages (30-60px range) - slimmer books
@@ -84,10 +91,10 @@ const getBookStatus = (book: { rating?: number; status?: string }) =>
 
 const stats = {
   year: 2026,
-  booksThisYear: 11,
+  booksThisYear: 13,
   lastYear: 42,
   fiveStars: 17,
-  lifetime: 146,
+  lifetime: 148,
 };
 ---
 
@@ -496,6 +503,10 @@ const stats = {
   }
 
   /* Bookshelf Container */
+  .bookshelf-wrapper {
+    overflow-x: clip;
+  }
+
   .bookshelf-container {
     margin-bottom: 2rem;
   }
@@ -514,7 +525,9 @@ const stats = {
     align-items: flex-end;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--color-border);
-    overflow: visible;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .shelf__books--left {
@@ -652,11 +665,10 @@ const stats = {
     color: var(--color-text-secondary);
   }
 
-  @media (max-width: 640px) {
-    .shelf__books {
-      overflow-x: auto;
+  @media (max-width: 860px) {
+    .shelf__books--right,
+    .shelf__books--center {
       justify-content: flex-start;
-      -webkit-overflow-scrolling: touch;
     }
   }
 
@@ -694,8 +706,9 @@ const stats = {
 
   /* Bookshelf wrapper - hidden while loading */
   .bookshelf-wrapper--loading {
+    height: 0;
     opacity: 0;
-    position: absolute;
+    overflow: hidden;
     pointer-events: none;
   }
 
