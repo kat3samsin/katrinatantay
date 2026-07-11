@@ -166,8 +166,9 @@ const githubMonthPositions: GithubMonthLabel[] = githubMonthLabels.map((label, i
 
 // Currently Reading - shelf style
 const currentlyReading = [
-  { title: "Everything Is Tuberculosis", author: "John Green", isbn: "9780525556572", progress: 0, pages: 198, color: "#2F6B4F", gap: 28, tilt: 2 },
-  { title: "My Friends", author: "Fredrik Backman", isbn: "9781982112820", progress: 0, pages: 448, color: "#2B6F8A", gap: 32, tilt: -2 },
+  { title: "Witchcraft for Wayward Girls", author: "Grady Hendrix", isbn: "9780593548981", progress: 0, pages: 496, color: "#4C4035", gap: 30, tilt: 2 },
+  { title: "Odyssey", author: "Stephen Fry", isbn: "9780241486351", coverUrl: "https://cdn.penguin.co.uk/dam-assets/books/9780241486351/9780241486351-jacket-large.jpg", progress: 0, pages: 432, color: "#34758E", gap: 30, tilt: -2 },
+  { title: "The Keeper of Happy Endings", author: "Barbara Davis", isbn: "9781542021470", progress: 0, pages: 416, color: "#6C5343", gap: 30, tilt: 3 },
 ];
 
 // Helper functions for shelf
@@ -195,6 +196,8 @@ function isLightColor(hex: string): boolean {
   return luminance > 0.5;
 }
 const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffffff';
+const getCoverUrl = (book: { isbn: string; coverUrl?: string }) =>
+  book.coverUrl ?? `https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`;
 ---
 
 <Layout>
@@ -466,7 +469,7 @@ const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffff
               </div>
               <img
                 class="home-book__cover"
-                src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                src={getCoverUrl(book)}
                 alt=""
                 loading="lazy"
               />

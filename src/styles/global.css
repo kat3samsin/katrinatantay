@@ -1186,14 +1186,6 @@ button {
     font-size: 1rem;
   }
 
-  .home-cover__brief p {
-    max-width: 20rem;
-  }
-
-  .about-copy {
-    max-width: 20rem;
-  }
-
   .profile-ledger {
     margin-bottom: 4rem;
   }

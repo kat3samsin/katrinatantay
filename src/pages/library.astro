@@ -3,16 +3,23 @@ import Layout from '../layouts/Layout.astro';
 
 // Currently Reading - with page counts and cover-matched colors
 const currentlyReading = [
-  { title: "Everything Is Tuberculosis", author: "John Green", isbn: "9780525556572", progress: 0, pages: 198, color: "#2F6B4F", gap: 28, tilt: 2 },
-  { title: "My Friends", author: "Fredrik Backman", isbn: "9781982112820", progress: 0, pages: 448, color: "#2B6F8A", gap: 32, tilt: -2 },
+  { title: "Witchcraft for Wayward Girls", author: "Grady Hendrix", isbn: "9780593548981", progress: 0, pages: 496, color: "#4C4035", gap: 30, tilt: 2 },
+  { title: "Odyssey", author: "Stephen Fry", isbn: "9780241486351", coverUrl: "https://cdn.penguin.co.uk/dam-assets/books/9780241486351/9780241486351-jacket-large.jpg", progress: 0, pages: 432, color: "#34758E", gap: 30, tilt: -2 },
+  { title: "The Keeper of Happy Endings", author: "Barbara Davis", isbn: "9781542021470", progress: 0, pages: 416, color: "#6C5343", gap: 30, tilt: 3 },
 ];
 
 // Read in 2026
 const readIn2026 = [
-  { title: "Dust", author: "Hugh Howey", isbn: "1490904387", pages: 464, color: "#30353B", gap: 34, tilt: 3, status: "Finished" },
+  { title: "The Wedding People", author: "Alison Espach", isbn: "9781250899576", pages: 384, color: "#2B6F8A", gap: 30, tilt: 2, status: "Finished" },
+  { title: "Where the Forest Meets the Stars", author: "Glendy Vanderah", isbn: "9781503904910", pages: 332, color: "#20394A", gap: 30, tilt: -2, status: "Finished" },
+  { title: "Randomize (Forward collection)", author: "Andy Weir", isbn: "9781542044257", pages: 28, color: "#3E1E8D", gap: 24, tilt: 3, status: "Finished" },
+  { title: "Dear Debbie", author: "Freida McFadden", isbn: "9781464249624", pages: 327, color: "#64725F", gap: 30, tilt: 2, status: "Finished" },
+  { title: "The Divorce", author: "Freida McFadden", isbn: "9781464249631", coverUrl: "https://www.freidamcfadden.com/wp-content/uploads/2026/01/cover-the-divorce.jpg", pages: 368, color: "#953872", gap: 32, tilt: -3, status: "Finished" },
+  { title: "Dust", author: "Hugh Howey", isbn: "1490904387", pages: 464, color: "#30353B", gap: 34, tilt: 3, status: "4 stars" },
   { title: "Shift", author: "Hugh Howey", isbn: "9780544839649", pages: 576, color: "#30353B", gap: 34, tilt: 3, status: "Finished" },
   { title: "WOOL", author: "Hugh Howey", isbn: "9780358447849", pages: 584, color: "#30353B", gap: 34, tilt: 2, status: "Finished" },
   { title: "The Stand", author: "Stephen King", isbn: "9780525616719", pages: 1152, color: "#3A2F2A", gap: 38, tilt: -2, status: "Finished" },
+  { title: "AI Engineering: Building Applications with Foundation Models", author: "Chip Huyen", isbn: "9781098166304", pages: 534, color: "#C1BDBA", gap: 34, tilt: 2, status: "Finished" },
   { title: "Anxious People", author: "Fredrik Backman", isbn: "9781501160844", pages: 352, color: "#4ECDC4", gap: 30, tilt: 3, status: "Finished" },
   { title: "The Housemaid Is Watching", author: "Freida McFadden", isbn: "9781464228711", pages: 336, color: "#8B0000", gap: 30, tilt: -2, status: "3.5 stars" },
   { title: "The Housemaid's Secret", author: "Freida McFadden", isbn: "9781538742570", pages: 336, color: "#8B0000", gap: 30, tilt: 2, status: "3 stars" },
@@ -86,15 +93,17 @@ function isLightColor(hex: string): boolean {
   return luminance > 0.5;
 }
 const getTextColor = (color: string) => isLightColor(color) ? '#1a1a1a' : '#ffffff';
+const getCoverUrl = (book: { isbn: string; coverUrl?: string }) =>
+  book.coverUrl ?? `https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`;
 const getBookStatus = (book: { rating?: number; status?: string }) =>
   book.status ?? `${'★'.repeat(book.rating ?? 0)}${'☆'.repeat(5 - (book.rating ?? 0))}`;
 
 const stats = {
   year: 2026,
-  booksThisYear: 13,
+  booksThisYear: readIn2026.length,
   lastYear: 42,
   fiveStars: 17,
-  lifetime: 148,
+  lifetime: 154,
 };
 ---
 
@@ -145,6 +154,7 @@ const stats = {
                   data-title={book.title}
                   data-author={book.author}
                   data-isbn={book.isbn}
+                  data-cover={getCoverUrl(book)}
                   data-progress={book.progress}
                   data-status={`📖 Reading · ${book.progress}%`}
                   style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
@@ -158,7 +168,7 @@ const stats = {
                     </div>
                     <img
                       class="book__cover-peek"
-                      src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                      src={getCoverUrl(book)}
                       alt={book.title}
                       loading="lazy"
                     />
@@ -180,6 +190,7 @@ const stats = {
                   data-title={book.title}
                   data-author={book.author}
                   data-isbn={book.isbn}
+                  data-cover={getCoverUrl(book)}
                   data-status={getBookStatus(book)}
                   style={`width: ${getThickness(book.pages)}px; height: ${getHeight(book.pages)}px; margin-right: ${book.gap}px; --tilt: ${book.tilt}deg;`}
                 >
@@ -189,7 +200,7 @@ const stats = {
                     </div>
                     <img
                       class="book__cover-peek"
-                      src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`}
+                      src={getCoverUrl(book)}
                       alt={book.title}
                       loading="lazy"
                     />
@@ -792,6 +803,7 @@ const stats = {
     const title = book.getAttribute('data-title') || '';
     const author = book.getAttribute('data-author') || '';
     const isbn = book.getAttribute('data-isbn') || '';
+    const coverUrl = book.getAttribute('data-cover') || `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`;
     const status = book.getAttribute('data-status') || '';
     const progress = book.getAttribute('data-progress');
 
@@ -801,7 +813,7 @@ const stats = {
     if (panelStatus) panelStatus.textContent = status;
     if (panelIsbn) panelIsbn.textContent = isbn;
     if (panelImg) {
-      panelImg.src = `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`;
+      panelImg.src = coverUrl;
       panelImg.alt = title;
     }
 
