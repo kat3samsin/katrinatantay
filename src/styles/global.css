@@ -1120,6 +1120,32 @@ button {
   }
 }
 
+@media (min-width: 960px) {
+  .home-cover {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(18rem, 5fr);
+    column-gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .home-subtitle {
+    white-space: normal;
+  }
+
+  .home-subtitle span {
+    display: block;
+  }
+
+  .home-cover__brief {
+    max-width: none;
+    margin-top: 0.35rem;
+  }
+
+  .home-cover__brief p {
+    max-width: 34rem;
+  }
+}
+
 @media (max-width: 860px) {
   .home-cover {
     min-height: 0;
