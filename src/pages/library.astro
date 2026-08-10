@@ -3,21 +3,27 @@ import Layout from '../layouts/Layout.astro';
 
 // Currently Reading - with page counts and cover-matched colors
 const currentlyReading = [
-  { title: "Witchcraft for Wayward Girls", author: "Grady Hendrix", isbn: "9780593548981", progress: 0, pages: 496, color: "#4C4035", gap: 30, tilt: 2 },
+  { title: "World War Z: An Oral History of the Zombie War", author: "Max Brooks", isbn: "0307346609", progress: 0, pages: 342, color: "#240E06", gap: 30, tilt: 2 },
   { title: "Odyssey", author: "Stephen Fry", isbn: "9780241486351", coverUrl: "https://cdn.penguin.co.uk/dam-assets/books/9780241486351/9780241486351-jacket-large.jpg", progress: 0, pages: 432, color: "#34758E", gap: 30, tilt: -2 },
-  { title: "The Keeper of Happy Endings", author: "Barbara Davis", isbn: "9781542021470", progress: 0, pages: 416, color: "#6C5343", gap: 30, tilt: 3 },
 ];
 
 // Read in 2026
 const readIn2026 = [
-  { title: "The Wedding People", author: "Alison Espach", isbn: "9781250899576", pages: 384, color: "#2B6F8A", gap: 30, tilt: 2, status: "Finished" },
-  { title: "Where the Forest Meets the Stars", author: "Glendy Vanderah", isbn: "9781503904910", pages: 332, color: "#20394A", gap: 30, tilt: -2, status: "Finished" },
+  { title: "The Last Town (Wayward Pines, #3)", author: "Blake Crouch", isbn: "1477872582", coverUrl: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1399508172i/20423680.jpg", pages: 294, color: "#6F4132", gap: 28, tilt: 3, status: "5 stars" },
+  { title: "Strange Pictures", author: "Uketsu", isbn: "9780063433090", coverUrl: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1728787087i/216670080.jpg", pages: 240, color: "#92C26B", gap: 26, tilt: -2, status: "4 stars" },
+  { title: "Wayward (Wayward Pines, #2)", author: "Blake Crouch", isbn: "1477808701", pages: 298, color: "#936155", gap: 28, tilt: -2, status: "5 stars" },
+  { title: "Pines (Wayward Pines, #1)", author: "Blake Crouch", isbn: "1612183956", pages: 307, color: "#233C49", gap: 28, tilt: 2, status: "4 stars" },
+  { title: "Healing Through Submission: A Faith Testimony", author: "Kirstin Aure", isbn: "", coverUrl: "https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1739424248i/227958662.jpg", pages: 69, color: "#3A5F73", gap: 22, tilt: 2, status: "Finished" },
+  { title: "Witchcraft for Wayward Girls", author: "Grady Hendrix", isbn: "9780593548981", pages: 496, color: "#4C4035", gap: 30, tilt: 2, status: "3 stars" },
+  { title: "The Keeper of Happy Endings", author: "Barbara Davis", isbn: "9781542021470", pages: 416, color: "#6C5343", gap: 30, tilt: 3, status: "4 stars" },
+  { title: "The Wedding People", author: "Alison Espach", isbn: "9781250899576", pages: 384, color: "#2B6F8A", gap: 30, tilt: 2, status: "5 stars" },
+  { title: "Where the Forest Meets the Stars", author: "Glendy Vanderah", isbn: "9781503904910", pages: 332, color: "#20394A", gap: 30, tilt: -2, status: "5 stars" },
   { title: "Randomize (Forward collection)", author: "Andy Weir", isbn: "9781542044257", pages: 28, color: "#3E1E8D", gap: 24, tilt: 3, status: "Finished" },
-  { title: "Dear Debbie", author: "Freida McFadden", isbn: "9781464249624", pages: 327, color: "#64725F", gap: 30, tilt: 2, status: "Finished" },
-  { title: "The Divorce", author: "Freida McFadden", isbn: "9781464249631", coverUrl: "https://www.freidamcfadden.com/wp-content/uploads/2026/01/cover-the-divorce.jpg", pages: 368, color: "#953872", gap: 32, tilt: -3, status: "Finished" },
+  { title: "Dear Debbie", author: "Freida McFadden", isbn: "9781464249624", pages: 327, color: "#64725F", gap: 30, tilt: 2, status: "4 stars" },
+  { title: "The Divorce", author: "Freida McFadden", isbn: "9781464249631", coverUrl: "https://www.freidamcfadden.com/wp-content/uploads/2026/01/cover-the-divorce.jpg", pages: 368, color: "#953872", gap: 32, tilt: -3, status: "3 stars" },
   { title: "Dust", author: "Hugh Howey", isbn: "1490904387", pages: 464, color: "#30353B", gap: 34, tilt: 3, status: "4 stars" },
-  { title: "Shift", author: "Hugh Howey", isbn: "9780544839649", pages: 576, color: "#30353B", gap: 34, tilt: 3, status: "Finished" },
-  { title: "WOOL", author: "Hugh Howey", isbn: "9780358447849", pages: 584, color: "#30353B", gap: 34, tilt: 2, status: "Finished" },
+  { title: "Shift", author: "Hugh Howey", isbn: "9780544839649", pages: 576, color: "#30353B", gap: 34, tilt: 3, status: "4 stars" },
+  { title: "WOOL", author: "Hugh Howey", isbn: "9780358447849", pages: 584, color: "#30353B", gap: 34, tilt: 2, status: "4 stars" },
   { title: "The Stand", author: "Stephen King", isbn: "9780525616719", pages: 1152, color: "#3A2F2A", gap: 38, tilt: -2, status: "Finished" },
   { title: "AI Engineering: Building Applications with Foundation Models", author: "Chip Huyen", isbn: "9781098166304", pages: 534, color: "#C1BDBA", gap: 34, tilt: 2, status: "Finished" },
   { title: "Anxious People", author: "Fredrik Backman", isbn: "9781501160844", pages: 352, color: "#4ECDC4", gap: 30, tilt: 3, status: "Finished" },
@@ -103,7 +109,7 @@ const stats = {
   booksThisYear: readIn2026.length,
   lastYear: 42,
   fiveStars: 17,
-  lifetime: 154,
+  lifetime: 161,
 };
 ---
 
@@ -782,6 +788,7 @@ const stats = {
   const panelTitle = document.getElementById('panel-title');
   const panelAuthor = document.getElementById('panel-author');
   const panelStatus = document.getElementById('panel-status');
+  const panelIsbnLabel = document.querySelector('.isbn-label');
   const panelIsbn = document.getElementById('panel-isbn');
   const panelImg = document.getElementById('panel-img') as HTMLImageElement;
   const panelProgressContainer = document.getElementById('panel-progress-container');
@@ -811,6 +818,7 @@ const stats = {
     if (panelTitle) panelTitle.textContent = title;
     if (panelAuthor) panelAuthor.textContent = `by ${author}`;
     if (panelStatus) panelStatus.textContent = status;
+    panelIsbnLabel?.classList.toggle('hidden', !isbn);
     if (panelIsbn) panelIsbn.textContent = isbn;
     if (panelImg) {
       panelImg.src = coverUrl;
